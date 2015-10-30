@@ -28,7 +28,7 @@ public class CeylonCompileMojo extends AbstractMojo {
   private boolean verbose;
 
   @Parameter(defaultValue = "${project.build.directory}/modules")
-  private File modulesDirectory;
+  private File targetModulesDirectory;
 
   @Parameter()
   private List sources;
@@ -46,7 +46,7 @@ public class CeylonCompileMojo extends AbstractMojo {
       Compiler compiler = new JavaCompilerImpl();
       ExtendedCompilerOptions options = new ExtendedCompilerOptions();
       options.setSourcePath(Collections.singletonList(sourcePath));
-      options.setOutputRepository(modulesDirectory.getAbsolutePath());
+      options.setOutputRepository(targetModulesDirectory.getAbsolutePath());
       if (target != null) {
         options.setTarget(target);
       }

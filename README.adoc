@@ -1,0 +1,106 @@
+== Ceylon Maven Plugin
+
+- Mission : integrate Ceylon in Maven builds.
+- Status  : usable
+
+Either build it or consume it from Sonatype https://oss.sonatype.org/content/repositories/snapshots/org/ceylon-lang/[snapshot repository].
+
+=== Import Maven dependencies as Ceylon modules
+
+----
+<plugin>
+  <groupId>org.ceylon-lang</groupId>
+  <artifactId>ceylon-maven-plugin</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <executions>
+    <execution>
+      <phase>initialize</phase>
+      <goals>
+        <goal>import-dependency</goal>
+      </goals>
+      <configuration>
+        <imports>
+          <import>
+            <dependency>
+              <groupId>org.hamcrest</groupId>
+              <artifactId>hamcrest-core</artifactId>
+              <version>1.3</version>
+            </dependency>
+            <descriptor>descriptors/org.hamcrest.hamcrest-core.properties</descriptor>
+            <module>org.hamcrest.hamcrest-core</module>
+            <version>1.3</version>
+          </import>
+          <import>
+            <dependency>
+              <groupId>junit</groupId>
+              <artifactId>junit</artifactId>
+              <version>4.11</version>
+            </dependency>
+            <descriptor>descriptors/junit.junit.properties</descriptor>
+            <module>junit.junit</module>
+            <version>4.11</version>
+          </import>
+        </imports>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+
+=== Compile Ceylon modules
+
+----
+<plugin>
+  <groupId>org.ceylon-lang</groupId>
+  <artifactId>ceylon-maven-plugin</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <executions>
+    <execution>
+      <phase>compile</phase>
+      <goals>
+        <goal>compile</goal>
+      </goals>
+      <configuration>
+        <userRepos>
+          <userRepo>${basedir}/modules</userRepo>
+        </userRepos>
+        <targetModulesDirectory>${project.build.directory}/modules</targetModulesDirectory>
+        <sources>
+          <source>
+            <fileset>
+              <directory>${basedir}/src/main/ceylon</directory>
+            </fileset>
+          </source>
+        </sources>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+
+=== Run a Ceylon module
+
+----
+<plugin>
+  <groupId>org.ceylon-lang</groupId>
+  <artifactId>ceylon-maven-plugin</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <executions>
+    <execution>
+      <phase>test</phase>
+      <goals>
+        <goal>run</goal>
+      </goals>
+      <configuration>
+        <userRepos>
+          <userRepo>${basedir}/modules</userRepo>
+          <userRepo>${project.build.directory}/modules</userRepo>
+        </userRepos>
+        <module>my.module</module>
+        <version>1.0.0</version>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+
