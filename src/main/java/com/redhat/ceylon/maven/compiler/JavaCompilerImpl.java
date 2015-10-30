@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * fork of : https://github.com/ceylon/ceylon.language/blob/master/runtime/com/redhat/ceylon/compiler/java/runtime/tools/impl/JavaCompilerImpl.java
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class JavaCompilerImpl implements Compiler {
