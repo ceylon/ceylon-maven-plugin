@@ -15,8 +15,11 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -56,9 +59,16 @@ public class CeylonCompileMojo extends AbstractMojo {
           options.addUserRepository(new File(userRepo).getAbsolutePath());
         }
       }
+      Set<File> excluded = new HashSet<File>();
+      for (String excludedFile : fileSetManager.getExcludedFiles(source.getFileset())) {
+        excluded.add(new File(sourcePath, excludedFile));
+      }
       ArrayList<File> sources = new ArrayList<File>();
-      for (String included : fileSetManager.getIncludedFiles(source.getFileset())) {
-        sources.add(new File(sourcePath, included));
+      for (String includedFile : fileSetManager.getIncludedFiles(source.getFileset())) {
+        File included = new File(sourcePath, includedFile);
+        if (!excluded.contains(included)) {
+          sources.add(included);
+        }
       }
       options.setFiles(sources);
       boolean ok = compiler.compile(options, new CompilationListener() {
