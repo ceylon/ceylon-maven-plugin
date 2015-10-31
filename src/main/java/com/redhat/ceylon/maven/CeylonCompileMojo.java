@@ -61,7 +61,7 @@ public class CeylonCompileMojo extends AbstractMojo {
         sources.add(new File(sourcePath, included));
       }
       options.setFiles(sources);
-      compiler.compile(options, new CompilationListener() {
+      boolean ok = compiler.compile(options, new CompilationListener() {
 
         public void error(File file, long line, long column, String message) {
           String msg;
@@ -89,6 +89,10 @@ public class CeylonCompileMojo extends AbstractMojo {
           System.out.println("Compiled module " + module + "/" + version);
         }
       });
+
+      if (!ok) {
+        throw new MojoExecutionException("Compilation failed");
+      }
     }
   }
 }
