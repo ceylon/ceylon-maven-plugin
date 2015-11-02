@@ -66,6 +66,8 @@ Either build it or consume it from Sonatype https://oss.sonatype.org/content/rep
 
 === Compile Ceylon modules
 
+Compile `src/main/ceylon` to `${project.build.directory}/modules`
+
 ----
 <plugin>
   <groupId>org.ceylon-lang</groupId>
@@ -73,29 +75,19 @@ Either build it or consume it from Sonatype https://oss.sonatype.org/content/rep
   <version>1.2.0-SNAPSHOT</version>
   <executions>
     <execution>
-      <phase>compile</phase>
       <goals>
         <goal>compile</goal>
       </goals>
-      <configuration>
-        <userRepos>
-          <userRepo>${basedir}/modules</userRepo>
-        </userRepos>
-        <targetModulesDirectory>${project.build.directory}/modules</targetModulesDirectory>
-        <sources>
-          <source>
-            <fileset>
-              <directory>${basedir}/src/main/ceylon</directory>
-            </fileset>
-          </source>
-        </sources>
-      </configuration>
     </execution>
   </executions>
 </plugin>
 ----
 
+todo : document configuration options
+
 === Run a Ceylon module
+
+Run `my.module/1.0` from `${project.build.directory}/modules`
 
 ----
 <plugin>
@@ -109,10 +101,6 @@ Either build it or consume it from Sonatype https://oss.sonatype.org/content/rep
         <goal>run</goal>
       </goals>
       <configuration>
-        <userRepos>
-          <userRepo>${basedir}/modules</userRepo>
-          <userRepo>${project.build.directory}/modules</userRepo>
-        </userRepos>
         <module>my.module</module>
         <version>1.0.0</version>
       </configuration>
@@ -121,3 +109,4 @@ Either build it or consume it from Sonatype https://oss.sonatype.org/content/rep
 </plugin>
 ----
 
+todo : document configuration options
