@@ -16,6 +16,7 @@ import com.sun.tools.javac.file.JavacFileManager;
 import java.io.File;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -87,10 +88,11 @@ public class JavaCompilerImpl implements Compiler {
 
     // Specific options
     ExtendedCompilerOptions extOptions = (ExtendedCompilerOptions) options;
-    if (extOptions.getTarget() != null) {
-      translatedOptions.add("-target");
-      translatedOptions.add(extOptions.getTarget());
+    if (extOptions.getJavacOptions() != null) {
+      Collections.addAll(translatedOptions, extOptions.getJavacOptions().split("\\s+"));
     }
+
+    System.out.println("translated options >" + translatedOptions + "<");
 
     return translatedOptions;
   }

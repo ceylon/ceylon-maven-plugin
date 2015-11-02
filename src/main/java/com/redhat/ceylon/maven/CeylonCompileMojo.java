@@ -15,6 +15,7 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,7 @@ public class CeylonCompileMojo extends AbstractMojo {
   private String[] userRepos;
 
   @Parameter
-  private String target;
+  private String javacOptions;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (sources != null) {
@@ -89,8 +90,8 @@ public class CeylonCompileMojo extends AbstractMojo {
     ExtendedCompilerOptions options = new ExtendedCompilerOptions();
     options.setSourcePath(sourcePaths);
     options.setOutputRepository(targetModulesDirectory.getAbsolutePath());
-    if (target != null) {
-      options.setTarget(target);
+    if (javacOptions != null && javacOptions.length() > 0) {
+      options.setJavacOptions(javacOptions);
     }
     options.setVerbose(verbose);
     if (userRepos != null) {
@@ -109,6 +110,7 @@ public class CeylonCompileMojo extends AbstractMojo {
         } else {
           msg = "Compilation error:" + message;
         }
+        System.out.println("ERROR : " + msg);
         getLog().error(msg);
       }
 
