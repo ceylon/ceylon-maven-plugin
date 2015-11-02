@@ -1,9 +1,9 @@
 package com.redhat.ceylon.maven;
 
-import com.redhat.ceylon.compiler.java.runtime.tools.Backend;
-import com.redhat.ceylon.compiler.java.runtime.tools.CeylonToolProvider;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunner;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunnerOptions;
+import com.redhat.ceylon.maven.tools.ExtendedRunnerOptions;
+import com.redhat.ceylon.maven.tools.JavaRunnerImpl;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -19,6 +19,9 @@ import java.io.File;
 @Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
 public class CeylonRunMojo extends AbstractMojo {
 
+  @Parameter(defaultValue = "${project.build.directory}")
+  private File cwd;
+
   @Parameter(defaultValue = "false")
   private boolean verbose;
 
@@ -32,12 +35,15 @@ public class CeylonRunMojo extends AbstractMojo {
   private String[] userRepos;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
-    JavaRunnerOptions runnerOptions = new JavaRunnerOptions();
+    ExtendedRunnerOptions runnerOptions = new ExtendedRunnerOptions();
     runnerOptions.setVerbose(verbose);
-    for (String userRepo : userRepos) {
-      runnerOptions.addUserRepository(new File(userRepo).getAbsolutePath());
+    if (userRepos != null) {
+      for (String userRepo : userRepos) {
+        runnerOptions.addUserRepository(new File(userRepo).getAbsolutePath());
+      }
     }
-    JavaRunner runner = (JavaRunner) CeylonToolProvider.getRunner(Backend.Java, runnerOptions, module, version);
+    runnerOptions.setCwd(cwd);
+    JavaRunner runner = new JavaRunnerImpl(runnerOptions, module, version);
     runner.run();
   }
 }

@@ -1,7 +1,7 @@
 package com.redhat.ceylon.maven;
 
-import com.redhat.ceylon.maven.compiler.ExtendedCompilerOptions;
-import com.redhat.ceylon.maven.compiler.JavaCompilerImpl;
+import com.redhat.ceylon.maven.tools.ExtendedCompilerOptions;
+import com.redhat.ceylon.maven.tools.JavaCompilerImpl;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -15,7 +15,6 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.redhat.ceylon.maven.compiler;
+package com.redhat.ceylon.maven.tools;
 
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
 import com.redhat.ceylon.compiler.java.runtime.tools.CompilerOptions;
