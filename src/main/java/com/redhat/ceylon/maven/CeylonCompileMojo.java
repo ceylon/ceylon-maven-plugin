@@ -15,7 +15,6 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -43,66 +42,95 @@ public class CeylonCompileMojo extends AbstractMojo {
   private String target;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
-    FileSetManager fileSetManager = new FileSetManager();
-    for (Source source : (List<Source>)sources) {
-      File sourcePath = new File(source.getFileset().getDirectory());
-      Compiler compiler = new JavaCompilerImpl();
-      ExtendedCompilerOptions options = new ExtendedCompilerOptions();
-      options.setSourcePath(Collections.singletonList(sourcePath));
-      options.setOutputRepository(targetModulesDirectory.getAbsolutePath());
-      if (target != null) {
-        options.setTarget(target);
-      }
-      options.setVerbose(verbose);
-      if (userRepos != null) {
-        for (String userRepo : userRepos) {
-          options.addUserRepository(new File(userRepo).getAbsolutePath());
-        }
-      }
-      Set<File> excluded = new HashSet<File>();
-      for (String excludedFile : fileSetManager.getExcludedFiles(source.getFileset())) {
-        excluded.add(new File(sourcePath, excludedFile));
-      }
+    if (sources != null) {
+      FileSetManager fileSetManager = new FileSetManager();
       ArrayList<File> sources = new ArrayList<File>();
-      for (String includedFile : fileSetManager.getIncludedFiles(source.getFileset())) {
-        File included = new File(sourcePath, includedFile);
-        if (!excluded.contains(included)) {
-          sources.add(included);
+      ArrayList<File> sourcePaths = new ArrayList<File>();
+      for (Source source : (List<Source>)this.sources) {
+        File sourcePath = new File(source.getFileset().getDirectory());
+        Set<File> excluded = new HashSet<File>();
+        for (String excludedFile : fileSetManager.getExcludedFiles(source.getFileset())) {
+          excluded.add(new File(sourcePath, excludedFile));
+        }
+        for (String includedFile : fileSetManager.getIncludedFiles(source.getFileset())) {
+          File included = new File(sourcePath, includedFile);
+          if (!excluded.contains(included)) {
+            sources.add(included);
+          }
+        }
+        sourcePaths.add(new File(source.getFileset().getDirectory()));
+      }
+      compile(sourcePaths, sources);
+    } else {
+      File sourcePath = new File("src/main/ceylon");
+      if (sourcePath.exists() && sourcePath.isDirectory()) {
+        List<File> sources = new ArrayList<File>();
+        collectSources(sourcePath, sources);
+        compile(Collections.singletonList(sourcePath), sources);
+      }
+    }
+  }
+
+  private void collectSources(File dir, List<File> sources) {
+    File[] files = dir.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory()) {
+          collectSources(file, sources);
+        } else if (file.isFile() && (file.getName().endsWith(".ceylon") || file.getName().endsWith(".java"))) {
+          sources.add(file);
         }
       }
-      options.setFiles(sources);
-      boolean ok = compiler.compile(options, new CompilationListener() {
+    }
+  }
 
-        public void error(File file, long line, long column, String message) {
-          String msg;
-          if (file != null) {
-            msg = "Compilation error at (" + line + "," + column + ") in " +
-                file.getAbsolutePath() + ":" + message;
-          } else {
-            msg = "Compilation error:" + message;
-          }
-          System.out.println(msg);
-        }
-
-        public void warning(File file, long line, long column, String message) {
-          String msg;
-          if (file != null) {
-            msg = "Compilation warning at (" + line + "," + column + ") in " +
-                file.getAbsolutePath() + ":" + message;
-          } else {
-            msg = "Compilation warning:" + message;
-          }
-          System.out.println(msg);
-        }
-
-        public void moduleCompiled(String module, String version) {
-          System.out.println("Compiled module " + module + "/" + version);
-        }
-      });
-
-      if (!ok) {
-        throw new MojoExecutionException("Compilation failed");
+  private void compile(List<File> sourcePaths, List<File> sources) throws MojoExecutionException, MojoFailureException {
+    Compiler compiler = new JavaCompilerImpl();
+    ExtendedCompilerOptions options = new ExtendedCompilerOptions();
+    options.setSourcePath(sourcePaths);
+    options.setOutputRepository(targetModulesDirectory.getAbsolutePath());
+    if (target != null) {
+      options.setTarget(target);
+    }
+    options.setVerbose(verbose);
+    if (userRepos != null) {
+      for (String userRepo : userRepos) {
+        options.addUserRepository(new File(userRepo).getAbsolutePath());
       }
+    }
+    options.setFiles(sources);
+    boolean ok = compiler.compile(options, new CompilationListener() {
+
+      public void error(File file, long line, long column, String message) {
+        String msg;
+        if (file != null) {
+          msg = "Compilation error at (" + line + "," + column + ") in " +
+              file.getAbsolutePath() + ":" + message;
+        } else {
+          msg = "Compilation error:" + message;
+        }
+        getLog().error(msg);
+      }
+
+      public void warning(File file, long line, long column, String message) {
+        String msg;
+        if (file != null) {
+          msg = "Compilation warning at (" + line + "," + column + ") in " +
+              file.getAbsolutePath() + ":" + message;
+        } else {
+          msg = "Compilation warning:" + message;
+        }
+        getLog().warn(msg);
+        System.out.println(msg);
+      }
+
+      public void moduleCompiled(String module, String version) {
+        getLog().info("Compiled module " + module + "/" + version);
+      }
+    });
+
+    if (!ok) {
+      throw new MojoExecutionException("Compilation failed");
     }
   }
 }
