@@ -110,3 +110,8 @@ Run `my.module/1.0` from `${project.build.directory}/modules`
 ----
 
 todo : document configuration options
+
+=== Todo
+
+- test `cwd`
+- refactor importer to use `cwd`
