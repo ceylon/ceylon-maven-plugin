@@ -2,14 +2,21 @@ package com.redhat.ceylon.maven.compiler;
 
 import com.redhat.ceylon.compiler.java.runtime.tools.CompilerOptions;
 
-import java.util.List;
-
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class ExtendedCompilerOptions extends CompilerOptions {
 
   private String javacOptions;
+  private String cwd;
+
+  public String getCwd() {
+    return cwd;
+  }
+
+  public void setCwd(String cwd) {
+    this.cwd = cwd;
+  }
 
   public String getJavacOptions() {
     return javacOptions;

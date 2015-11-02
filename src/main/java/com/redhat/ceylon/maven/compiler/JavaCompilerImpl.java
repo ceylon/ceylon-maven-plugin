@@ -91,8 +91,10 @@ public class JavaCompilerImpl implements Compiler {
     if (extOptions.getJavacOptions() != null) {
       Collections.addAll(translatedOptions, extOptions.getJavacOptions().split("\\s+"));
     }
-
-    System.out.println("translated options >" + translatedOptions + "<");
+    if (extOptions.getCwd() != null) {
+      translatedOptions.add("-cwd");
+      translatedOptions.add(extOptions.getCwd());
+    }
 
     return translatedOptions;
   }

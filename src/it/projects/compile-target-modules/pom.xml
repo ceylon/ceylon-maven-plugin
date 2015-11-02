@@ -22,7 +22,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <targetModulesDirectory>${project.build.directory}/the_modules</targetModulesDirectory>
+              <out>the_modules</out>
             </configuration>
           </execution>
         </executions>
