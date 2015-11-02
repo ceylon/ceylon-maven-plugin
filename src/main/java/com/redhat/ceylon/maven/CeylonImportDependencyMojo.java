@@ -19,6 +19,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,9 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
 
   @Parameter(required = true)
   protected DependencyImport[] imports;
+
+  @Parameter(defaultValue = "${project.build.directory}")
+  private File cwd;
 
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
   protected RepositorySystemSession repoSession;
@@ -64,6 +68,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       if (dependencyImport.getForce()) {
         tool.setForce(true);
       }
+      tool.setCwd(cwd);
       tool.setFile(result.getArtifact().getFile());
       tool.setModuleSpec(new ModuleSpec(dependencyImport.getModule(), dependencyImport.getVersion()));
       tools.add(tool);
