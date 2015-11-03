@@ -222,6 +222,17 @@ The `run` goal runs a Ceylon:
 - the goal does not have default execution phase
 - the default module repository resolves to `target/modules`
 
+Arguments can be passed to the process:
+
+----
+<configuration>
+  <arguments>
+    <argument>first_arg</argument>
+    <argument>second_arg</argument>
+  </arguments>
+</configuration>
+----
+
 Extra user repositories can be added:
 
 ----

@@ -32,6 +32,9 @@ public class CeylonRunMojo extends AbstractMojo {
   @Parameter
   private String[] userRepos;
 
+  @Parameter
+  private String[] arguments;
+
   public void execute() throws MojoExecutionException, MojoFailureException {
     ExtendedRunnerOptions runnerOptions = new ExtendedRunnerOptions();
     runnerOptions.setVerbose(verbose);
@@ -48,6 +51,10 @@ public class CeylonRunMojo extends AbstractMojo {
       throw new MojoExecutionException("Invalid module name " + module, e);
     }
     JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
-    runner.run();
+    if (arguments != null) {
+      runner.run(arguments);
+    } else {
+      runner.run();
+    }
   }
 }
