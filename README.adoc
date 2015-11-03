@@ -258,3 +258,8 @@ Finally the execution can be skipped:
   <skip>true</skip>
 </configuration>
 ----
+
+== Todo
+
+- _test_ goal
+- import sources jar
