@@ -265,3 +265,4 @@ Finally the execution can be skipped:
 - import sources jar
 - default module id when classifer != null
 - maybe need to handle dependency scope in importer
+- test external snapshot resolution

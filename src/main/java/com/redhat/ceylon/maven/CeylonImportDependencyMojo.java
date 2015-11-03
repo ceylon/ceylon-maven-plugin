@@ -90,7 +90,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
               safeEquals(managed.getArtifact().getArtifactId(), dependency.getArtifactId()) &&
               safeEquals(managed.getArtifact().getClassifier(), dependency.getClassifier()) &&
               safeEquals(managed.getArtifact().getExtension(), dependency.getType())) {
-            dependencyVersion = managed.getArtifact().getVersion();
+            dependencyVersion = managed.getArtifact().getBaseVersion();
           }
         }
       }
