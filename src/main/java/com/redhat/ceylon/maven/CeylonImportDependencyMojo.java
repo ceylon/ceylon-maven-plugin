@@ -36,6 +36,9 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.build.directory}")
   private File cwd;
 
+  @Parameter(defaultValue = "modules")
+  private String out;
+
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
   protected RepositorySystemSession repoSession;
 
@@ -69,6 +72,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
         tool.setForce(true);
       }
       tool.setCwd(cwd);
+      tool.setOut(out);
       tool.setFile(result.getArtifact().getFile());
       tool.setModuleSpec(new ModuleSpec(dependencyImport.getModule(), dependencyImport.getVersion()));
       tools.add(tool);
