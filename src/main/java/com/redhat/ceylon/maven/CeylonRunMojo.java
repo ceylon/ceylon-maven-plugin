@@ -39,7 +39,7 @@ public class CeylonRunMojo extends AbstractMojo {
     runnerOptions.setVerbose(verbose);
     if (userRepos != null) {
       for (String userRepo : userRepos) {
-        runnerOptions.addUserRepository(new File(userRepo).getAbsolutePath());
+        runnerOptions.addUserRepository(userRepo);
       }
     }
     runnerOptions.setCwd(cwd);

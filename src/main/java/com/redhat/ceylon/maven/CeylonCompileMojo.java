@@ -99,7 +99,7 @@ public class CeylonCompileMojo extends AbstractMojo {
     options.setVerbose(verbose);
     if (userRepos != null) {
       for (String userRepo : userRepos) {
-        options.addUserRepository(new File(userRepo).getAbsolutePath());
+        options.addUserRepository(userRepo);
       }
     }
     options.setFiles(sources);
