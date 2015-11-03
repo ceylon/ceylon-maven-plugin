@@ -72,7 +72,7 @@ The `import-dependency` goals imports a Maven dependency in a Ceylon repository:
 - the default imported module name is `${groupId}.${artifactId}/${version}`
 - the default module repository resolves to `target/modules`
 
-An ommited dependency version is resolved from the `dependencyManagement` section.
+An ommited dependency version is resolved from the project dependencies.
 
 The imported module coordinates can be overriden with the `name` and `version`:
 
