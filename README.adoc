@@ -263,3 +263,4 @@ Finally the execution can be skipped:
 
 - _test_ goal
 - import sources jar
+- default module id when classifer != null
