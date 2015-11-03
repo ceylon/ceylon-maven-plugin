@@ -1,5 +1,6 @@
 package com.redhat.ceylon.maven;
 
+import com.redhat.ceylon.common.tools.ModuleSpec;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunner;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunnerOptions;
 import com.redhat.ceylon.maven.tools.ExtendedRunnerOptions;
@@ -25,11 +26,8 @@ public class CeylonRunMojo extends AbstractMojo {
   @Parameter(defaultValue = "false")
   private boolean verbose;
 
-  @Parameter
+  @Parameter(required = true)
   private String module;
-
-  @Parameter
-  private String version;
 
   @Parameter
   private String[] userRepos;
@@ -43,7 +41,13 @@ public class CeylonRunMojo extends AbstractMojo {
       }
     }
     runnerOptions.setCwd(cwd);
-    JavaRunner runner = new JavaRunnerImpl(runnerOptions, module, version);
+    ModuleSpec moduleSpec;
+    try {
+      moduleSpec = ModuleSpec.parse(module);
+    } catch (Exception e) {
+      throw new MojoExecutionException("Invalid module name " + module, e);
+    }
+    JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
     runner.run();
   }
 }

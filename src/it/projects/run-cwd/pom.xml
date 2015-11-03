@@ -34,8 +34,7 @@
             <phase>test</phase>
             <configuration>
               <cwd>${project.build.directory}/other</cwd>
-              <module>mymodule</module>
-              <version>1.0.0</version>
+              <module>mymodule/1.0.0</module>
             </configuration>
           </execution>
         </executions>
