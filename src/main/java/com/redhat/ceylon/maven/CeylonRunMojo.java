@@ -36,31 +36,36 @@ public class CeylonRunMojo extends AbstractMojo {
   @Parameter
   private String[] arguments;
 
+  @Parameter
+  private boolean skip;
+
   public void execute() throws MojoExecutionException, MojoFailureException {
-    ExtendedRunnerOptions runnerOptions = new ExtendedRunnerOptions();
-    runnerOptions.setVerbose(verbose);
-    if (userRepos != null) {
-      for (String userRepo : userRepos) {
-        runnerOptions.addUserRepository(userRepo);
+    if (!skip) {
+      ExtendedRunnerOptions runnerOptions = new ExtendedRunnerOptions();
+      runnerOptions.setVerbose(verbose);
+      if (userRepos != null) {
+        for (String userRepo : userRepos) {
+          runnerOptions.addUserRepository(userRepo);
+        }
       }
-    }
-    runnerOptions.setCwd(cwd);
-    ModuleSpec moduleSpec;
-    try {
-      moduleSpec = ModuleSpec.parse(module);
-    } catch (Exception e) {
-      throw new MojoExecutionException("Invalid module name " + module, e);
-    }
-    JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
-    try {
-      if (arguments != null) {
-        runner.run(arguments);
-      } else {
-        runner.run();
+      runnerOptions.setCwd(cwd);
+      ModuleSpec moduleSpec;
+      try {
+        moduleSpec = ModuleSpec.parse(module);
+      } catch (Exception e) {
+        throw new MojoExecutionException("Invalid module name " + module, e);
       }
-    } catch (Exception e) {
-      // It shall be a InvocationTargetException so get the cause
-      throw new MojoExecutionException("Execution error", e.getCause());
+      JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
+      try {
+        if (arguments != null) {
+          runner.run(arguments);
+        } else {
+          runner.run();
+        }
+      } catch (Exception e) {
+        // It shall be a InvocationTargetException so get the cause
+        throw new MojoExecutionException("Execution error", e.getCause());
+      }
     }
   }
 }

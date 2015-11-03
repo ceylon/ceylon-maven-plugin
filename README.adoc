@@ -250,3 +250,11 @@ The verbosity can be configured:
   <verbose>true</verbose>
 </configuration>
 ----
+
+Finally the execution can be skipped:
+
+----
+<configuration>
+  <skip>true</skip>
+</configuration>
+----
