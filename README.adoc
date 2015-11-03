@@ -1,7 +1,6 @@
 == Ceylon Maven Plugin
 
-- Mission : integrate Ceylon in Maven builds.
-- Status  : usable
+Integrate Ceylon in Maven builds.
 
 Either build it or consume it from Sonatype https://oss.sonatype.org/content/repositories/snapshots/org/ceylon-lang/[snapshot repository]:
 
@@ -22,96 +21,221 @@ Either build it or consume it from Sonatype https://oss.sonatype.org/content/rep
 </pluginRepositories>
 ----
 
-=== Import Maven dependencies as Ceylon modules
+The Ceylon `cwd` (current working directory) is set to `${project.build.directory}`, this property can be overriden
+by setting the `ceylon.cwd` property affecting any goal of the plugin:
 
 ----
-<plugin>
-  <groupId>org.ceylon-lang</groupId>
-  <artifactId>ceylon-maven-plugin</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
-  <executions>
-    <execution>
-      <phase>initialize</phase>
-      <goals>
-        <goal>import-dependency</goal>
-      </goals>
-      <configuration>
-        <imports>
-          <import>
-            <dependency>
-              <groupId>org.hamcrest</groupId>
-              <artifactId>hamcrest-core</artifactId>
-              <version>1.3</version>
-            </dependency>
-            <descriptor>descriptors/org.hamcrest.hamcrest-core.properties</descriptor>
-            <module>org.hamcrest.hamcrest-core</module>
-            <version>1.3</version>
-          </import>
-          <import>
-            <dependency>
-              <groupId>junit</groupId>
-              <artifactId>junit</artifactId>
-              <version>4.11</version>
-            </dependency>
-            <descriptor>descriptors/junit.junit.properties</descriptor>
-            <module>junit.junit</module>
-            <version>4.11</version>
-          </import>
-        </imports>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
+<properties>
+  <ceylon.cwd>/path/to/the/cwd</ceylon.cwd>
+</properties>
+----
+
+In particular this affects the location `modules` directory used by the `compile`, `import-dependency` and `run` phases.
+
+This configuration can be overriden in the plugin configuration, either globally or for a particular phase:
+
+----
+<execution>
+  <goals>
+    <goal>compile</goal>
+  </goals>
+  <configuration>
+    <cwd>/path/to/the/cwd</cwd>
+  </configuration>
+</execution>
+----
+
+=== Import Maven dependencies as Ceylon modules
+
+The `import-dependency` goals imports a Maven dependency in a Ceylon repository:
+
+----
+<execution>
+  <goals>
+    <goal>import-dependency</goal>
+  </goals>
+  <configuration>
+    <moduleImports>
+      <moduleImport>
+        <dependency>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+          <version>1.3</version>
+        </dependency>
+      </moduleImport>
+    </moduleImports>
+  </configuration>
+</execution>
+----
+
+- the default execution phase is `initialize`
+- the default imported module name is `${groupId}.${artifactId}/${version}`
+- the default module repository resolves to `target/modules`
+
+An ommited dependency version is resolved from the `dependencyManagement` section.
+
+The imported module coordinates can be overriden with the `name` and `version`:
+
+----
+<configuration>
+  <moduleImport>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <name>org.harmcrest.core</name>
+    <version>1.3.0</version>
+  </moduleImport>
+</configuration>
+----
+
+A module descriptor can be provided thanks to the `descriptor` configuration:
+
+----
+<configuration>
+  <moduleImport>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <descriptor>hamcrest.properties</descriptor>
+  </moduleImport>
+</configuration>
+----
+
+A module import can be `forced`:
+
+----
+<configuration>
+  <moduleImport>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <force>true</force>
+  </moduleImport>
+</configuration>
+----
+
+The `out` configuration changes the module output directory:
+
+----
+<configuration>
+  <!-- module will be imported in target/mymodules -->
+  <out>mymodules</out>
+</configuration>
 ----
 
 === Compile Ceylon modules
 
-Compile `src/main/ceylon` to `${project.build.directory}/modules`
+The `compile` goal compiles Ceylon modules:
 
 ----
-<plugin>
-  <groupId>org.ceylon-lang</groupId>
-  <artifactId>ceylon-maven-plugin</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
-  <executions>
-    <execution>
-      <goals>
-        <goal>compile</goal>
-      </goals>
-    </execution>
-  </executions>
-</plugin>
+<execution>
+  <goals>
+    <goal>compile</goal>
+  </goals>
+</execution>
 ----
 
-todo : document configuration options
+- the default execution phase is `compile`
+- the default compiled fileset is `${basedir}/src/main/ceylon`
+- the default module repository resolves to `target/modules`
+
+The source fileset can be configured:
+
+----
+<execution>
+  <goals>
+    <goal>compile</goal>
+  </goals>
+  <configuration>
+    <sources>
+      <source>
+        <fileset>
+          <directory>${project.basedir}/src/foo/ceylon</directory>
+        </fileset>
+      </source>
+      <source>
+        <fileset>
+          <directory>${project.basedir}/src/bar/ceylon</directory>
+        </fileset>
+      </source>
+    </sources>
+  </configuration>
+</execution>
+----
+
+Extra user repositories can be added:
+
+----
+<configuration>
+  <userRepos>
+    <userRepo>/path/to/my/module/repo</userRepo>
+  </userRepos>
+</configuration>
+----
+
+The default output repository can be changed:
+
+----
+<configuration>
+  <out>my_modules</out>
+</configuration>
+----
+
+Javac options can be passed:
+
+----
+<configuration>
+  <javacOptions>-target 8</javacOptions>
+</configuration>
+----
+
+The verbosity can be configured:
+
+----
+<configuration>
+  <verbose>true</verbose>
+</configuration>
+----
 
 === Run a Ceylon module
 
-Run `my.module/1.0` from `${project.build.directory}/modules`
+The `run` goal runs a Ceylon:
 
 ----
-<plugin>
-  <groupId>org.ceylon-lang</groupId>
-  <artifactId>ceylon-maven-plugin</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
-  <executions>
-    <execution>
-      <phase>test</phase>
-      <goals>
-        <goal>run</goal>
-      </goals>
-      <configuration>
-        <module>my.module</module>
-        <version>1.0.0</version>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
+<execution>
+  <phase>test</phase>
+  <goals>
+    <goal>run</goal>
+  </goals>
+  <configuration>
+    <module>my.module/1.0.0</module>
+  </configuration>
+</execution>
 ----
 
-todo : document configuration options
+- the goal does not have default execution phase
+- the default module repository resolves to `target/modules`
 
-=== Todo
+Extra user repositories can be added:
 
-- test `cwd`
-- refactor importer to use `cwd`
+----
+<configuration>
+  <userRepos>
+    <userRepo>/path/to/my/module/repo</userRepo>
+  </userRepos>
+</configuration>
+----
+
+The verbosity can be configured:
+
+----
+<configuration>
+  <verbose>true</verbose>
+</configuration>
+----
