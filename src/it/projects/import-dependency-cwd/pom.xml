@@ -10,10 +10,6 @@
 
   <name>compile-default</name>
 
-  <properties>
-    <ceylon.cwd>${project.build.directory}/other</ceylon.cwd>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -22,11 +18,11 @@
         <version>1.2.0-SNAPSHOT</version>
         <executions>
           <execution>
-            <id>import-ceylon</id>
             <goals>
               <goal>import-dependency</goal>
             </goals>
             <configuration>
+              <cwd>${project.build.directory}/other</cwd>
               <moduleImports>
                 <moduleImport>
                   <dependency>
@@ -36,23 +32,6 @@
                   </dependency>
                 </moduleImport>
               </moduleImports>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile-ceylon</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>run-ceylon</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>test</phase>
-            <configuration>
-              <module>mymodule</module>
-              <version>1.0.0</version>
             </configuration>
           </execution>
         </executions>
