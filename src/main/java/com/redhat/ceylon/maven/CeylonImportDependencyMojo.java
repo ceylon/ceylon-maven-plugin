@@ -4,6 +4,7 @@ import com.redhat.ceylon.common.tools.CeylonTool;
 import com.redhat.ceylon.common.tools.ModuleSpec;
 import com.redhat.ceylon.tools.importjar.CeylonImportJarTool;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -27,13 +28,13 @@ import java.util.List;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-@Mojo(name = "import-dependency", defaultPhase = LifecyclePhase.NONE)
+@Mojo(name = "import-dependency", defaultPhase = LifecyclePhase.INITIALIZE)
 public class CeylonImportDependencyMojo extends AbstractMojo {
 
   @Parameter(required = true)
   protected DependencyImport[] imports;
 
-  @Parameter(defaultValue = "${project.build.directory}")
+  @Parameter(property = "ceylon.cwd", defaultValue = "${project.build.directory}")
   private File cwd;
 
   @Parameter(defaultValue = "modules")
@@ -44,6 +45,10 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
 
   @Component
   protected RepositorySystem repoSystem;
+
+//  @Component
+// getProject().getDependencyManagement()
+//  protected DependencyManagement dependencyManagement;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -74,7 +79,18 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       tool.setCwd(cwd);
       tool.setOut(out);
       tool.setFile(result.getArtifact().getFile());
-      tool.setModuleSpec(new ModuleSpec(dependencyImport.getModule(), dependencyImport.getVersion()));
+
+      //
+      String module = dependencyImport.getModule();
+      String version = dependencyImport.getVersion();
+      if (module == null) {
+        module = dependency.getGroupId() + "." + dependency.getArtifactId();
+      }
+      if (version == null) {
+        version = dependency.getVersion();
+      }
+
+      tool.setModuleSpec(new ModuleSpec(module, version));
       tools.add(tool);
     }
 
