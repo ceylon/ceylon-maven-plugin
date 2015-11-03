@@ -21,6 +21,10 @@ Either build it or consume it from Sonatype https://oss.sonatype.org/content/rep
 </pluginRepositories>
 ----
 
+Here is an https://github.com/vietj/ceylon-maven-example[example project].
+
+== Usage
+
 The Ceylon `cwd` (current working directory) is set to `${project.build.directory}`, this property can be overriden
 by setting the `ceylon.cwd` property affecting any goal of the plugin:
 
