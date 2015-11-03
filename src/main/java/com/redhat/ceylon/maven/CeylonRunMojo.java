@@ -13,6 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -51,10 +52,15 @@ public class CeylonRunMojo extends AbstractMojo {
       throw new MojoExecutionException("Invalid module name " + module, e);
     }
     JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
-    if (arguments != null) {
-      runner.run(arguments);
-    } else {
-      runner.run();
+    try {
+      if (arguments != null) {
+        runner.run(arguments);
+      } else {
+        runner.run();
+      }
+    } catch (Exception e) {
+      // It shall be a InvocationTargetException so get the cause
+      throw new MojoExecutionException("Execution error", e.getCause());
     }
   }
 }
