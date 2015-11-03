@@ -12,7 +12,13 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.DefaultProjectDependenciesResolver;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -51,12 +57,25 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
   @Component
   protected RepositorySystem repoSystem;
 
+  @Component
+  protected ProjectDependenciesResolver resolver;
+
   public void execute() throws MojoExecutionException, MojoFailureException {
 
-    DependencyManagement dependencyManagement = project.getDependencyManagement();
+    // Resolve project dependencies
+    List<org.eclipse.aether.graph.Dependency> dependencies;
+    try {
+      DependencyResolutionRequest req = new DefaultDependencyResolutionRequest();
+      req.setMavenProject(project);
+      req.setRepositorySession(repoSession);
+      DependencyResolutionResult resolution = resolver.resolve(req);
+      dependencies = resolution.getDependencies();
+    } catch (DependencyResolutionException e) {
+      throw new MojoFailureException("Could not resolve dependencies", e);
+    }
 
-    List<CeylonImportJarTool> tools = new ArrayList<CeylonImportJarTool>();
-    List<ModuleSpec> moduleSpecs = new ArrayList<ModuleSpec>();
+    List<CeylonImportJarTool> tools = new ArrayList<>();
+    List<ModuleSpec> moduleSpecs = new ArrayList<>();
 
     // Prepare all imports
     for (ModuleImport moduleImport : moduleImports) {
@@ -64,14 +83,14 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       ArtifactResult result;
       String dependencyVersion = dependency.getVersion();
 
-      // Not provided => get from dependency management
+      // Not provided => resolve from project dependencies
       if (dependencyVersion == null) {
-        for (Dependency managed : dependencyManagement.getDependencies()) {
-          if (Objects.equals(managed.getGroupId(), dependency.getGroupId()) &&
-              Objects.equals(managed.getArtifactId(), dependency.getArtifactId()) &&
-              Objects.equals(managed.getClassifier(), dependency.getClassifier()) &&
-              Objects.equals(managed.getType(), dependency.getType())) {
-            dependencyVersion = managed.getVersion();
+        for (org.eclipse.aether.graph.Dependency managed : dependencies) {
+          if (safeEquals(managed.getArtifact().getGroupId(), dependency.getGroupId()) &&
+              safeEquals(managed.getArtifact().getArtifactId(), dependency.getArtifactId()) &&
+              safeEquals(managed.getArtifact().getClassifier(), dependency.getClassifier()) &&
+              safeEquals(managed.getArtifact().getExtension(), dependency.getType())) {
+            dependencyVersion = managed.getArtifact().getVersion();
           }
         }
       }
@@ -125,5 +144,15 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
         throw ex;
       }
     }
+  }
+
+  private boolean safeEquals(String s, String t) {
+    if (s == null) {
+      s = "";
+    }
+    if (t == null) {
+      t= "";
+    }
+    return s.equals(t);
   }
 }
