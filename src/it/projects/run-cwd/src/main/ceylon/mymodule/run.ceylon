@@ -1,1 +1,1 @@
-shared void run() => print("Hello World");
+shared void run() => print("executed_run_cwd");
