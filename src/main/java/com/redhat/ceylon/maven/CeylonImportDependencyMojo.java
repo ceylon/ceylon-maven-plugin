@@ -56,6 +56,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
     DependencyManagement dependencyManagement = project.getDependencyManagement();
 
     List<CeylonImportJarTool> tools = new ArrayList<CeylonImportJarTool>();
+    List<ModuleSpec> moduleSpecs = new ArrayList<ModuleSpec>();
 
     // Prepare all imports
     for (DependencyImport dependencyImport : imports) {
@@ -106,8 +107,9 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       if (version == null) {
         version = dependencyVersion;
       }
-
-      tool.setModuleSpec(new ModuleSpec(module, version));
+      ModuleSpec moduleSpec = new ModuleSpec(module, version);
+      moduleSpecs.add(moduleSpec);
+      tool.setModuleSpec(moduleSpec);
       tools.add(tool);
     }
 
@@ -118,7 +120,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
         tool.initialize(new CeylonTool());
         tool.run();
       } catch (Exception e) {
-        MojoExecutionException ex = new MojoExecutionException("Cannot import dependency " + imports[i].getModule() + "/" + imports[i].getVersion());
+        MojoExecutionException ex = new MojoExecutionException("Cannot import dependency " + moduleSpecs.get(i));
         ex.initCause(e);
         throw ex;
       }
