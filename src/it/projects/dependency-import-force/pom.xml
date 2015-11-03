@@ -22,16 +22,16 @@
               <goal>import-dependency</goal>
             </goals>
             <configuration>
-              <imports>
-                <import>
+              <moduleImports>
+                <moduleImport>
                   <dependency>
                     <groupId>io.netty</groupId>
                     <artifactId>netty-codec</artifactId>
                     <version>4.0.31.Final</version>
                   </dependency>
                   <force>true</force>
-                </import>
-              </imports>
+                </moduleImport>
+              </moduleImports>
             </configuration>
           </execution>
         </executions>

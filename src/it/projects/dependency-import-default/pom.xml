@@ -22,15 +22,15 @@
               <goal>import-dependency</goal>
             </goals>
             <configuration>
-              <imports>
-                <import>
+              <moduleImports>
+                <moduleImport>
                   <dependency>
                     <groupId>javax.inject</groupId>
                     <artifactId>javax.inject</artifactId>
                     <version>1</version>
                   </dependency>
-                </import>
-              </imports>
+                </moduleImport>
+              </moduleImports>
             </configuration>
           </execution>
         </executions>

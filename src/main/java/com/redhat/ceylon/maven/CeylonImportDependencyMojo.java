@@ -34,7 +34,7 @@ import java.util.Objects;
 public class CeylonImportDependencyMojo extends AbstractMojo {
 
   @Parameter(required = true)
-  protected DependencyImport[] imports;
+  protected ModuleImport[] moduleImports;
 
   @Parameter(property = "ceylon.cwd", defaultValue = "${project.build.directory}")
   private File cwd;
@@ -59,8 +59,8 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
     List<ModuleSpec> moduleSpecs = new ArrayList<ModuleSpec>();
 
     // Prepare all imports
-    for (DependencyImport dependencyImport : imports) {
-      Dependency dependency = dependencyImport.getDependency();
+    for (ModuleImport moduleImport : moduleImports) {
+      Dependency dependency = moduleImport.getDependency();
       ArtifactResult result;
       String dependencyVersion = dependency.getVersion();
 
@@ -88,10 +88,10 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
         throw ex;
       }
       CeylonImportJarTool tool = new CeylonImportJarTool();
-      if (dependencyImport.getDescriptor() != null) {
-        tool.setDescriptor(dependencyImport.getDescriptor());
+      if (moduleImport.getDescriptor() != null) {
+        tool.setDescriptor(moduleImport.getDescriptor());
       }
-      if (dependencyImport.getForce()) {
+      if (moduleImport.getForce()) {
         tool.setForce(true);
       }
       tool.setCwd(cwd);
@@ -99,15 +99,15 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       tool.setFile(result.getArtifact().getFile());
 
       //
-      String module = dependencyImport.getModule();
-      String version = dependencyImport.getVersion();
-      if (module == null) {
-        module = dependency.getGroupId() + "." + dependency.getArtifactId();
+      String moduleName = moduleImport.getName();
+      String moduleVersion = moduleImport.getVersion();
+      if (moduleName == null) {
+        moduleName = dependency.getGroupId() + "." + dependency.getArtifactId();
       }
-      if (version == null) {
-        version = dependencyVersion;
+      if (moduleVersion == null) {
+        moduleVersion = dependencyVersion;
       }
-      ModuleSpec moduleSpec = new ModuleSpec(module, version);
+      ModuleSpec moduleSpec = new ModuleSpec(moduleName, moduleVersion);
       moduleSpecs.add(moduleSpec);
       tool.setModuleSpec(moduleSpec);
       tools.add(tool);
@@ -120,7 +120,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
         tool.initialize(new CeylonTool());
         tool.run();
       } catch (Exception e) {
-        MojoExecutionException ex = new MojoExecutionException("Cannot import dependency " + moduleSpecs.get(i));
+        MojoExecutionException ex = new MojoExecutionException("Cannot import module " + moduleSpecs.get(i));
         ex.initCause(e);
         throw ex;
       }

@@ -22,16 +22,16 @@
               <goal>import-dependency</goal>
             </goals>
             <configuration>
-              <imports>
-                <import>
+              <moduleImports>
+                <moduleImport>
                   <dependency>
                     <groupId>javax.inject</groupId>
                     <artifactId>javax.inject</artifactId>
                     <version>1</version>
                   </dependency>
-                  <module>foobar</module>
-                </import>
-              </imports>
+                  <name>foobar</name>
+                </moduleImport>
+              </moduleImports>
             </configuration>
           </execution>
         </executions>

@@ -22,16 +22,16 @@
               <goal>import-dependency</goal>
             </goals>
             <configuration>
-              <imports>
-                <import>
+              <moduleImports>
+                <moduleImport>
                   <dependency>
                     <groupId>javax.inject</groupId>
                     <artifactId>javax.inject</artifactId>
                     <version>1</version>
                   </dependency>
                   <descriptor>the_descriptor.properties</descriptor>
-                </import>
-              </imports>
+                </moduleImport>
+              </moduleImports>
             </configuration>
           </execution>
         </executions>
