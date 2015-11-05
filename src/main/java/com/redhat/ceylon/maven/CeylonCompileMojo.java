@@ -45,13 +45,13 @@ public class CeylonCompileMojo extends AbstractMojo {
   private String javacOptions;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
-    if (sources != null) {
+    ArrayList<File> sources = new ArrayList<>();
+    ArrayList<File> sourcePaths = new ArrayList<>();
+    if (this.sources != null) {
       FileSetManager fileSetManager = new FileSetManager();
-      ArrayList<File> sources = new ArrayList<File>();
-      ArrayList<File> sourcePaths = new ArrayList<File>();
       for (Source source : (List<Source>)this.sources) {
         File sourcePath = new File(source.getFileset().getDirectory());
-        Set<File> excluded = new HashSet<File>();
+        Set<File> excluded = new HashSet<>();
         for (String excludedFile : fileSetManager.getExcludedFiles(source.getFileset())) {
           excluded.add(new File(sourcePath, excludedFile));
         }
@@ -63,14 +63,15 @@ public class CeylonCompileMojo extends AbstractMojo {
         }
         sourcePaths.add(new File(source.getFileset().getDirectory()));
       }
-      compile(sourcePaths, sources);
     } else {
       File sourcePath = new File("src/main/ceylon");
       if (sourcePath.exists() && sourcePath.isDirectory()) {
-        List<File> sources = new ArrayList<File>();
         collectSources(sourcePath, sources);
-        compile(Collections.singletonList(sourcePath), sources);
+        sourcePaths.add(sourcePath);
       }
+    }
+    if (sourcePaths.size() > 0 && sources.size() > 0) {
+      compile(sourcePaths, sources);
     }
   }
 
