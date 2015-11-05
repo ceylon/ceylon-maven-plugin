@@ -173,6 +173,21 @@ The source fileset can be configured:
 </execution>
 ----
 
+Resources can be added:
+
+----
+<configuration>
+  <resources>
+    <resource>
+      <fileset>
+        <directory>${project.basedir}/src/resources</directory>
+      </fileset>
+    </resource>
+  </resources>
+</configuration>
+----
+
+
 Extra user repositories can be added:
 
 ----

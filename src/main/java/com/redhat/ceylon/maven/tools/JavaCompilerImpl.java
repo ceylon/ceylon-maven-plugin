@@ -95,6 +95,12 @@ public class JavaCompilerImpl implements Compiler {
       translatedOptions.add("-cwd");
       translatedOptions.add(extOptions.getCwd());
     }
+    if (extOptions.getResourcePath() != null) {
+      for(File resourcePath : extOptions.getResourcePath()){
+        translatedOptions.add("-res");
+        translatedOptions.add(resourcePath.getPath());
+      }
+    }
 
     return translatedOptions;
   }
