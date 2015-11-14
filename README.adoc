@@ -278,6 +278,10 @@ Finally the execution can be skipped:
 </configuration>
 ----
 
+== Eclipse Integration
+In order to create a project with the ceylon maven plugin using eclipse, start by creating the project using a maven wizzard just as you normally would. Since the default directory for the ceylon source code is ${basedir}/src/main/ceylon you should create that directory and put your modules in there unless you changed the default. Then change your pom.xml according to the instructions at the beggining of this document. That should be enough for it to work via maven. 
+In order to make your project work with the ceylon plugin for eclipse, first get the ceylon plugin for eclipse using the eclipse market place. Once you have that plugin right click on your project and click Configure>Convert to Ceylon Project. Then, if you're aren't already in the ceylon perspective get into it by clicking Window>Switch Perspective>Ceylon. Then in the ceylon explorer, right click on your project and click Build Path>Configure Build Path. In the window that pops up navigate to Ceylon Build>Build Path. Once you're there, make sure ${basedir}/src/main/ceylon is listed as one of the source folders. If it isn't click add folder and select ${basedir}/src/main/ceylon. Then change the output folder at the bottom of the window from target to target/classes. Click ok. At this point you can create a module in ${basedir}/src/main/ceylon using the ceylon plugin for eclipse. You should also be able to run that module. If you have trouble running the module go to the run configurations and make sure that your module is selected. 
+
 == Todo
 
 - _test_ goal
