@@ -28,11 +28,9 @@
                 </fileset>
               </sources>
               <resources>
-                <resource>
-                  <fileset>
-                    <directory>${project.basedir}/resource</directory>
-                  </fileset>
-                </resource>
+                <fileset>
+                  <directory>${project.basedir}/resource</directory>
+                </fileset>
               </resources>
             </configuration>
           </execution>

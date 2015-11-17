@@ -39,7 +39,7 @@ public class CeylonCompileMojo extends AbstractMojo {
   private List<FileSet> sources;
 
   @Parameter()
-  private List resources;
+  private List<FileSet> resources;
 
   @Parameter
   private String[] userRepos;
@@ -76,19 +76,19 @@ public class CeylonCompileMojo extends AbstractMojo {
     }
     if (this.resources != null) {
       FileSetManager fileSetManager = new FileSetManager();
-      for (Resource resource : (List<Resource>)this.resources) {
-        File resourcePath = new File(resource.getFileset().getDirectory());
+      for (FileSet resource : this.resources) {
+        File resourcePath = new File(resource.getDirectory());
         Set<File> excluded = new HashSet<>();
-        for (String excludedFile : fileSetManager.getExcludedFiles(resource.getFileset())) {
+        for (String excludedFile : fileSetManager.getExcludedFiles(resource)) {
           excluded.add(new File(resourcePath, excludedFile));
         }
-        for (String includedFile : fileSetManager.getIncludedFiles(resource.getFileset())) {
+        for (String includedFile : fileSetManager.getIncludedFiles(resource)) {
           File included = new File(resourcePath, includedFile);
           if (!excluded.contains(included)) {
             files.add(included);
           }
         }
-        resourcePaths.add(new File(resource.getFileset().getDirectory()));
+        resourcePaths.add(new File(resource.getDirectory()));
       }
     }
     if (sourcePaths.size() > 0 && files.size() > 0) {

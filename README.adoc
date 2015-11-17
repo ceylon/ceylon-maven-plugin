@@ -174,11 +174,9 @@ Resources can be added:
 ----
 <configuration>
   <resources>
-    <resource>
       <fileset>
         <directory>${project.basedir}/src/resources</directory>
       </fileset>
-    </resource>
   </resources>
 </configuration>
 ----
