@@ -24,11 +24,9 @@
             </goals>
             <configuration>
               <sources>
-                <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/foo/ceylon</directory>
-                  </fileset>
-                </source>
+                <fileset>
+                  <directory>${project.basedir}/src/foo/ceylon</directory>
+                </fileset>
               </sources>
               <out>foo</out>
             </configuration>
@@ -43,11 +41,9 @@
                 <userRepo>foo</userRepo>
               </userRepos>
               <sources>
-                <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/bar/ceylon</directory>
-                  </fileset>
-                </source>
+                <fileset>
+                  <directory>${project.basedir}/src/bar/ceylon</directory>
+                </fileset>
               </sources>
             </configuration>
           </execution>

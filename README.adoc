@@ -146,10 +146,10 @@ The `compile` goal compiles Ceylon modules:
 ----
 
 - the default execution phase is `compile`
-- the default compiled fileset is `${basedir}/src/main/ceylon`
+- the default compiled sources fileset is `${basedir}/src/main/ceylon`
 - the default module repository resolves to `target/modules`
 
-The source fileset can be configured:
+The sources fileset can be configured:
 
 ----
 <execution>
@@ -158,16 +158,12 @@ The source fileset can be configured:
   </goals>
   <configuration>
     <sources>
-      <source>
-        <fileset>
-          <directory>${project.basedir}/src/foo/ceylon</directory>
-        </fileset>
-      </source>
-      <source>
-        <fileset>
-          <directory>${project.basedir}/src/bar/ceylon</directory>
-        </fileset>
-      </source>
+      <fileset>
+        <directory>${project.basedir}/src/foo/ceylon</directory>
+      </fileset>
+      <fileset>
+        <directory>${project.basedir}/src/bar/ceylon</directory>
+      </fileset>
     </sources>
   </configuration>
 </execution>
@@ -309,6 +305,7 @@ If you have trouble running the module go to the run configurations and make sur
 
 == Todo
 
+- compile : specify module
 - _test_ goal
 - import sources jar
 - default module id when classifer != null

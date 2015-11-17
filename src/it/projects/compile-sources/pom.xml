@@ -23,16 +23,12 @@
             </goals>
             <configuration>
               <sources>
-                <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/foo/ceylon</directory>
-                  </fileset>
-                </source>
-                <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/bar/ceylon</directory>
-                  </fileset>
-                </source>
+                <fileset>
+                  <directory>${project.basedir}/src/foo/ceylon</directory>
+                </fileset>
+                <fileset>
+                  <directory>${project.basedir}/src/bar/ceylon</directory>
+                </fileset>
               </sources>
             </configuration>
           </execution>
