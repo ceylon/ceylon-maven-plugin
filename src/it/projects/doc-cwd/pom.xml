@@ -10,10 +10,6 @@
 
   <name>compile-default</name>
 
-  <properties>
-    <ceylon.cwd>${project.build.directory}/other</ceylon.cwd>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -22,47 +18,24 @@
         <version>1.2.0-SNAPSHOT</version>
         <executions>
           <execution>
-            <id>import-ceylon</id>
-            <goals>
-              <goal>import-dependency</goal>
-            </goals>
-            <configuration>
-              <moduleImports>
-                <moduleImport>
-                  <dependency>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                    <version>1</version>
-                  </dependency>
-                </moduleImport>
-              </moduleImports>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile-ceylon</id>
+            <id>compile</id>
             <goals>
               <goal>compile</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>run-ceylon</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>test</phase>
             <configuration>
-              <module>mymodule/1.0.0</module>
+              <cwd>${project.build.directory}/other</cwd>
             </configuration>
           </execution>
           <execution>
-            <id>doc-ceylon</id>
+            <id>doc</id>
             <goals>
               <goal>doc</goal>
             </goals>
-            <phase>prepare-package</phase>
+            <phase>compile</phase>
             <configuration>
+              <cwd>${project.build.directory}/other</cwd>
               <modules>
-                <module>mymodule/1.0.0</module>
+                <module>mymodule</module>
               </modules>
             </configuration>
           </execution>
