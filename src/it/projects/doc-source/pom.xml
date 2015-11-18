@@ -24,9 +24,9 @@
             </goals>
             <configuration>
               <sources>
-                <fileset>
+                <source>
                   <directory>${project.basedir}/src/foobar/ceylon</directory>
-                </fileset>
+                </source>
               </sources>
             </configuration>
           </execution>

@@ -158,12 +158,12 @@ The sources fileset can be configured:
   </goals>
   <configuration>
     <sources>
-      <fileset>
+      <source>
         <directory>${project.basedir}/src/foo/ceylon</directory>
-      </fileset>
-      <fileset>
+      </source>
+      <source>
         <directory>${project.basedir}/src/bar/ceylon</directory>
-      </fileset>
+      </source>
     </sources>
   </configuration>
 </execution>
@@ -174,9 +174,9 @@ Resources can be added:
 ----
 <configuration>
   <resources>
-      <fileset>
+      <resource>
         <directory>${project.basedir}/src/resources</directory>
-      </fileset>
+      </resource>
   </resources>
 </configuration>
 ----
