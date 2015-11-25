@@ -2,25 +2,6 @@
 
 Integrate Ceylon in Maven builds.
 
-Either build it or consume it from Sonatype https://oss.sonatype.org/content/repositories/snapshots/org/ceylon-lang/[snapshot repository]:
-
-.In your pom.xml or settings.xml
-----
-<pluginRepositories>
-  <pluginRepository>
-    <id>sonatype-nexus-snapshots</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-    <layout>default</layout>
-    <releases>
-      <enabled>false</enabled>
-    </releases>
-  </pluginRepository>
-</pluginRepositories>
-----
-
 Here is an https://github.com/vietj/ceylon-maven-example[example project].
 
 == Usage
