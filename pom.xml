@@ -14,8 +14,30 @@
   <artifactId>ceylon-maven-plugin</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
+  <organization>
+    <name>Ceylon Lang</name>
+    <url>http://ceylon-lang.org</url>
+  </organization>
+
   <name>Ceylon Maven Plugin</name>
   <packaging>maven-plugin</packaging>
+
+  <scm>
+    <connection>scm:git:git@github.com:ceylon/ceylon-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/ceylon/ceylon-maven-plugin.git</developerConnection>
+    <url>git@github.com:ceylon/ceylon-maven-plugin.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>julien.viet</id>
+      <name>Julien Viet</name>
+      <email>julien@julienviet.com</email>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+  </developers>
 
   <properties>
     <maven.test.skip>false</maven.test.skip>
