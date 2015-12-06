@@ -37,6 +37,7 @@ public class JavaCompilerImpl implements Compiler {
       // make the tool shut the hell up
       writer = new NullWriter();
     }
+    
 
     JavacFileManager fileManager = compiler.getStandardFileManager(writer, diagnosticListener, null, null);
 
