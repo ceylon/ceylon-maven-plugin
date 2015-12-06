@@ -24,14 +24,10 @@
             <configuration>
               <sources>
                 <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/foo/ceylon</directory>
-                  </fileset>
+                  <directory>${project.basedir}/src/foo/ceylon</directory>
                 </source>
                 <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/bar/ceylon</directory>
-                  </fileset>
+                  <directory>${project.basedir}/src/bar/ceylon</directory>
                 </source>
               </sources>
             </configuration>

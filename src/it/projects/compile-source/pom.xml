@@ -24,9 +24,7 @@
             <configuration>
               <sources>
                 <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/foobar/ceylon</directory>
-                  </fileset>
+                  <directory>${project.basedir}/src/foobar/ceylon</directory>
                 </source>
               </sources>
             </configuration>

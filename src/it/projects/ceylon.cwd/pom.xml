@@ -54,6 +54,18 @@
               <module>mymodule/1.0.0</module>
             </configuration>
           </execution>
+          <execution>
+            <id>doc-ceylon</id>
+            <goals>
+              <goal>doc</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <modules>
+                <module>mymodule/1.0.0</module>
+              </modules>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

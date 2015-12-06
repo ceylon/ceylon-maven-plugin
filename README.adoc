@@ -2,25 +2,6 @@
 
 Integrate Ceylon in Maven builds.
 
-Either build it or consume it from Sonatype https://oss.sonatype.org/content/repositories/snapshots/org/ceylon-lang/[snapshot repository]:
-
-.In your pom.xml or settings.xml
-----
-<pluginRepositories>
-  <pluginRepository>
-    <id>sonatype-nexus-snapshots</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-    <layout>default</layout>
-    <releases>
-      <enabled>false</enabled>
-    </releases>
-  </pluginRepository>
-</pluginRepositories>
-----
-
 Here is an https://github.com/vietj/ceylon-maven-example[example project].
 
 == Usage
@@ -146,10 +127,10 @@ The `compile` goal compiles Ceylon modules:
 ----
 
 - the default execution phase is `compile`
-- the default compiled fileset is `${basedir}/src/main/ceylon`
+- the default compiled sources fileset is `${basedir}/src/main/ceylon`
 - the default module repository resolves to `target/modules`
 
-The source fileset can be configured:
+The sources fileset can be configured:
 
 ----
 <execution>
@@ -159,14 +140,10 @@ The source fileset can be configured:
   <configuration>
     <sources>
       <source>
-        <fileset>
-          <directory>${project.basedir}/src/foo/ceylon</directory>
-        </fileset>
+        <directory>${project.basedir}/src/foo/ceylon</directory>
       </source>
       <source>
-        <fileset>
-          <directory>${project.basedir}/src/bar/ceylon</directory>
-        </fileset>
+        <directory>${project.basedir}/src/bar/ceylon</directory>
       </source>
     </sources>
   </configuration>
@@ -178,11 +155,9 @@ Resources can be added:
 ----
 <configuration>
   <resources>
-    <resource>
-      <fileset>
+      <resource>
         <directory>${project.basedir}/src/resources</directory>
-      </fileset>
-    </resource>
+      </resource>
   </resources>
 </configuration>
 ----
@@ -278,6 +253,39 @@ Finally the execution can be skipped:
 </configuration>
 ----
 
+=== Document a Ceylon module
+
+The `doc` goal documents a Ceylon:
+
+----
+<execution>
+  <phase>prepare-package</phase>
+  <goals>
+    <goal>goal</goal>
+  </goals>
+  <configuration>
+    <modules>
+      <module>my.module</module>
+    </modules>
+  </configuration>
+</execution>
+----
+
+- the goal does not have default execution phase
+- the default module repository resolves to `target/modules`
+
+Arguments can be passed to the process:
+
+Extra user repositories can be added:
+
+----
+<configuration>
+  <userRepos>
+    <userRepo>/path/to/my/module/repo</userRepo>
+  </userRepos>
+</configuration>
+----
+
 == Eclipse Integration
 
 In order to create a project with the ceylon maven plugin using eclipse start by creating the project using a maven wizzard
@@ -309,6 +317,7 @@ If you have trouble running the module go to the run configurations and make sur
 
 == Todo
 
+- compile : specify module
 - _test_ goal
 - import sources jar
 - default module id when classifer != null

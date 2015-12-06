@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -12,10 +10,41 @@
 
   <groupId>org.ceylon-lang</groupId>
   <artifactId>ceylon-maven-plugin</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0-beta3-SNAPSHOT</version>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Ceylon Lang</name>
+    <url>http://ceylon-lang.org</url>
+  </organization>
 
   <name>Ceylon Maven Plugin</name>
   <packaging>maven-plugin</packaging>
+
+  <scm>
+    <connection>scm:git:git@github.com:ceylon/ceylon-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/ceylon/ceylon-maven-plugin.git</developerConnection>
+    <url>git@github.com:ceylon/ceylon-maven-plugin.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>julien.viet</id>
+      <name>Julien Viet</name>
+      <email>julien@julienviet.com</email>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+  </developers>
 
   <properties>
     <maven.test.skip>false</maven.test.skip>
@@ -29,7 +58,7 @@
     <dependency>
       <groupId>org.ceylon-lang</groupId>
       <artifactId>ceylon-all</artifactId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
@@ -67,6 +96,10 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <executions>

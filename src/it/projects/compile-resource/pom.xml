@@ -24,16 +24,12 @@
             <configuration>
               <sources>
                 <source>
-                  <fileset>
-                    <directory>${project.basedir}/src/foobar/ceylon</directory>
-                  </fileset>
+                  <directory>${project.basedir}/src/foobar/ceylon</directory>
                 </source>
               </sources>
               <resources>
                 <resource>
-                  <fileset>
-                    <directory>${project.basedir}/resource</directory>
-                  </fileset>
+                  <directory>${project.basedir}/resource</directory>
                 </resource>
               </resources>
             </configuration>

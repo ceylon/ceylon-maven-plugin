@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.redhat.ceylon.compiler.java.runtime.tools.*;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
+import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import com.redhat.ceylon.maven.Source;
 
@@ -36,10 +37,10 @@ public class CeylonCompileMojo extends AbstractMojo {
   private String out;
 
   @Parameter()
-  private List sources;
+  private List<FileSet> sources;
 
   @Parameter()
-  private List resources;
+  private List<FileSet> resources;
 
   @Parameter
   private String[] userRepos;
@@ -53,19 +54,19 @@ public class CeylonCompileMojo extends AbstractMojo {
     ArrayList<File> resourcePaths = new ArrayList<>();
     if (this.sources != null) {
       FileSetManager fileSetManager = new FileSetManager();
-      for (Source source : (List<Source>)this.sources) {
-        File sourcePath = new File(source.getFileset().getDirectory());
+      for (FileSet source : this.sources) {
+        File sourcePath = new File(source.getDirectory());
         Set<File> excluded = new HashSet<>();
-        for (String excludedFile : fileSetManager.getExcludedFiles(source.getFileset())) {
+        for (String excludedFile : fileSetManager.getExcludedFiles(source)) {
           excluded.add(new File(sourcePath, excludedFile));
         }
-        for (String includedFile : fileSetManager.getIncludedFiles(source.getFileset())) {
+        for (String includedFile : fileSetManager.getIncludedFiles(source)) {
           File included = new File(sourcePath, includedFile);
           if (!excluded.contains(included)) {
             files.add(included);
           }
         }
-        sourcePaths.add(new File(source.getFileset().getDirectory()));
+        sourcePaths.add(new File(source.getDirectory()));
       }
     } else {
       File sourcePath = new File("src/main/ceylon");
@@ -76,19 +77,19 @@ public class CeylonCompileMojo extends AbstractMojo {
     }
     if (this.resources != null) {
       FileSetManager fileSetManager = new FileSetManager();
-      for (Resource resource : (List<Resource>)this.resources) {
-        File resourcePath = new File(resource.getFileset().getDirectory());
+      for (FileSet resource : this.resources) {
+        File resourcePath = new File(resource.getDirectory());
         Set<File> excluded = new HashSet<>();
-        for (String excludedFile : fileSetManager.getExcludedFiles(resource.getFileset())) {
+        for (String excludedFile : fileSetManager.getExcludedFiles(resource)) {
           excluded.add(new File(resourcePath, excludedFile));
         }
-        for (String includedFile : fileSetManager.getIncludedFiles(resource.getFileset())) {
+        for (String includedFile : fileSetManager.getIncludedFiles(resource)) {
           File included = new File(resourcePath, includedFile);
           if (!excluded.contains(included)) {
             files.add(included);
           }
         }
-        resourcePaths.add(new File(resource.getFileset().getDirectory()));
+        resourcePaths.add(new File(resource.getDirectory()));
       }
     }
     if (sourcePaths.size() > 0 && files.size() > 0) {

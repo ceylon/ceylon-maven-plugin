@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.ceylon-lang.test</groupId>
-  <artifactId>compile-sources</artifactId>
+  <artifactId>compile-source</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>compile-sources</name>
+  <name>compile-source</name>
 
   <build>
     <plugins>
@@ -18,33 +18,21 @@
         <version>1.2.0-SNAPSHOT</version>
         <executions>
           <execution>
-            <id>compile-foo</id>
+            <id>compile</id>
             <goals>
               <goal>compile</goal>
             </goals>
-            <configuration>
-              <sources>
-                <source>
-                  <directory>${project.basedir}/src/foo/ceylon</directory>
-                </source>
-              </sources>
-              <out>foo</out>
-            </configuration>
           </execution>
           <execution>
-            <id>compile-bar</id>
+            <id>doc</id>
             <goals>
-              <goal>compile</goal>
+              <goal>doc</goal>
             </goals>
+            <phase>compile</phase>
             <configuration>
-              <userRepos>
-                <userRepo>foo</userRepo>
-              </userRepos>
-              <sources>
-                <source>
-                  <directory>${project.basedir}/src/bar/ceylon</directory>
-                </source>
-              </sources>
+              <modules>
+                <module>mymodule</module>
+              </modules>
             </configuration>
           </execution>
         </executions>
