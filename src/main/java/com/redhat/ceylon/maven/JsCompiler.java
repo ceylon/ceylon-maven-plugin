@@ -21,7 +21,7 @@ public class JsCompiler {
 		
 		
 		jsCompileTool.setSource(options.getSourcePath());
-		System.out.println(options.getSourcePath());
+		
 		
 		jsCompileTool.setModule(findJsModulesInDir(options.getSourcePath()));
 		jsCompileTool.setSource(options.getSourcePath());

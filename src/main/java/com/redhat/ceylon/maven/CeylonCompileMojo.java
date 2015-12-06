@@ -166,8 +166,8 @@ public class CeylonCompileMojo extends AbstractMojo {
       throw new MojoExecutionException("Compilation failed");
     }
     
-    System.out.println("Start js compiler");
+    
     new JsCompiler().compile(options, null);
-    System.out.println("done js compiler");
+    
   }
 }
