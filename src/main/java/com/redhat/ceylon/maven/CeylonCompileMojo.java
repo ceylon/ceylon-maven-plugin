@@ -12,6 +12,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.redhat.ceylon.compiler.java.runtime.tools.*;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
+import com.redhat.ceylon.maven.Source;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -115,16 +116,21 @@ public class CeylonCompileMojo extends AbstractMojo {
     options.setResourcePath(resourcePath);
     options.setCwd(cwd.getAbsolutePath());
     options.setOutputRepository(out);
+    options.setVerbose(verbose);
+    
+
     if (javacOptions != null && javacOptions.length() > 0) {
       options.setJavacOptions(javacOptions);
     }
-    options.setVerbose(verbose);
+    
     if (userRepos != null) {
       for (String userRepo : userRepos) {
         options.addUserRepository(userRepo);
       }
     }
     options.setFiles(files);
+    
+    getLog().info(options.getSourcePath().toString());
     boolean ok = compiler.compile(options, new CompilationListener() {
 
       public void error(File file, long line, long column, String message) {
@@ -159,5 +165,9 @@ public class CeylonCompileMojo extends AbstractMojo {
     if (!ok) {
       throw new MojoExecutionException("Compilation failed");
     }
+    
+    System.out.println("Start js compiler");
+    new JsCompiler().compile(options, null);
+    System.out.println("done js compiler");
   }
 }
