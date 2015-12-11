@@ -315,6 +315,15 @@ You should also be able to run that module.
 
 If you have trouble running the module go to the run configurations and make sure that your module is selected.
 
+== Plugin versionning
+
+Plugin version are named after Ceylon release using an extra number for its own numbering, for example:
+
+- 1.2.0 : first version for Ceylon 1.2.0
+- 1.2.0.1 : next version for Ceylon 1.2.0
+- 1.2.1 : first version for Ceylon 1.2.1
+- etc...
+
 == Todo
 
 - compile : specify module
