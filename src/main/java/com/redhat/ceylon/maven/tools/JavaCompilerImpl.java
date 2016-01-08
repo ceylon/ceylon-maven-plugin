@@ -4,15 +4,15 @@ import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
 import com.redhat.ceylon.compiler.java.runtime.tools.CompilerOptions;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaCompilerOptions;
 
-import javax.tools.JavaFileObject;
-
 import com.redhat.ceylon.compiler.java.launcher.Main.ExitState;
 import com.redhat.ceylon.compiler.java.launcher.Main.ExitState.CeylonState;
 import com.redhat.ceylon.compiler.java.runtime.tools.CompilationListener;
 import com.redhat.ceylon.compiler.java.runtime.tools.impl.NullWriter;
 import com.redhat.ceylon.compiler.java.tools.CeyloncTaskImpl;
 import com.redhat.ceylon.compiler.java.tools.CeyloncTool;
-import com.sun.tools.javac.file.JavacFileManager;
+import com.redhat.ceylon.javax.tools.JavaFileObject;
+import com.redhat.ceylon.langtools.tools.javac.file.JavacFileManager;
+
 import java.io.File;
 import java.io.Writer;
 import java.util.ArrayList;
