@@ -23,8 +23,10 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 
 import java.io.File;
@@ -51,6 +53,9 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
   protected RepositorySystemSession repoSession;
 
+  @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+  public List<RemoteRepository> remoteRepos;
+
   @Parameter(defaultValue = "${project}", readonly = true)
   public MavenProject project;
 
@@ -59,6 +64,14 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
 
   @Component
   protected ProjectDependenciesResolver resolver;
+
+  private ArtifactResult fetch(Dependency dependency) throws Exception {
+    Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(), dependency.getType(), dependency.getVersion());
+    ArtifactRequest request = new ArtifactRequest();
+    request.setArtifact(artifact);
+    request.setRepositories(remoteRepos);
+    return repoSystem.resolveArtifact(repoSession, request);
+  }
 
   public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -80,32 +93,19 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
     // Prepare all imports
     for (ModuleImport moduleImport : moduleImports) {
       Dependency dependency = moduleImport.getDependency();
-      ArtifactResult result;
-      String dependencyVersion = dependency.getVersion();
 
       // Not provided => resolve from project dependencies
-      if (dependencyVersion == null) {
+      if (dependency.getVersion() == null) {
         for (org.eclipse.aether.graph.Dependency managed : dependencies) {
           if (safeEquals(managed.getArtifact().getGroupId(), dependency.getGroupId()) &&
               safeEquals(managed.getArtifact().getArtifactId(), dependency.getArtifactId()) &&
               safeEquals(managed.getArtifact().getClassifier(), dependency.getClassifier()) &&
               safeEquals(managed.getArtifact().getExtension(), dependency.getType())) {
-            dependencyVersion = managed.getArtifact().getBaseVersion();
+            dependency.setVersion(managed.getArtifact().getBaseVersion());
           }
         }
       }
 
-      try {
-        Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(), dependency.getType(), dependencyVersion);
-        ArtifactRequest request = new ArtifactRequest();
-        request.setArtifact(artifact);
-        request.setRepositories(Collections.<RemoteRepository>emptyList());
-        result = repoSystem.resolveArtifact(repoSession, request);
-      } catch (Exception e) {
-        MojoExecutionException ex = new MojoExecutionException("Cannot resolve dependency");
-        ex.initCause(e);
-        throw ex;
-      }
       CeylonImportJarTool tool = new CeylonImportJarTool();
       if (moduleImport.getDescriptor() != null) {
         tool.setDescriptor(moduleImport.getDescriptor());
@@ -115,16 +115,35 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       }
       tool.setCwd(cwd);
       tool.setOut(out);
-      tool.setFile(result.getArtifact().getFile());
+      try {
+        ArtifactResult result = fetch(dependency);
+        tool.setFile(result.getArtifact().getFile());
+      } catch (Exception e) {
+        MojoExecutionException ex = new MojoExecutionException("Cannot resolve dependency");
+        ex.initCause(e);
+        throw ex;
+      }
+      if (moduleImport.getSources()) {
+        try {
+          dependency.setClassifier("sources");
+          ArtifactResult result = fetch(dependency);
+          tool.setSourceJarFile(result.getArtifact().getFile());
+        } catch (ArtifactResolutionException e) {
+          // No sources
+        } catch (Exception e) {
+          MojoExecutionException ex = new MojoExecutionException("Cannot resolve dependency");
+          ex.initCause(e);
+          throw ex;
+        }
+      }
 
-      //
       String moduleName = moduleImport.getName();
       String moduleVersion = moduleImport.getVersion();
       if (moduleName == null) {
         moduleName = dependency.getGroupId() + "." + dependency.getArtifactId();
       }
       if (moduleVersion == null) {
-        moduleVersion = dependencyVersion;
+        moduleVersion = dependency.getVersion();
       }
       ModuleSpec moduleSpec = new ModuleSpec(moduleName, moduleVersion);
       moduleSpecs.add(moduleSpec);

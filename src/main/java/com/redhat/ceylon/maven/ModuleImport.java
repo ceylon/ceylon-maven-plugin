@@ -14,6 +14,7 @@ public class ModuleImport {
   private String name;
   private String version;
   private File descriptor;
+  private boolean sources = true;
 
   public Dependency getDependency() {
     return dependency;
@@ -53,5 +54,13 @@ public class ModuleImport {
 
   public void setDescriptor(File descriptor) {
     this.descriptor = descriptor;
+  }
+
+  public boolean getSources() {
+    return sources;
+  }
+
+  public void setSources(boolean sources) {
+    this.sources = sources;
   }
 }

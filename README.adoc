@@ -114,6 +114,17 @@ The `out` configuration changes the module output directory:
 </configuration>
 ----
 
+When the dependency has a _sources-jar_, it is imported as well as a sources jar, this can be prevented if necessary:
+
+----
+<moduleImport>
+  ...
+  <sources>false</sources>
+  ...
+</moduleImport>
+----
+
+
 === Compile Ceylon modules
 
 The `compile` goal compiles Ceylon modules:
