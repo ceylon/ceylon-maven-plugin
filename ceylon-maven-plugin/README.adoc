@@ -1,0 +1,316 @@
+== Ceylon Maven Plugin
+
+Integrate Ceylon in Maven builds.
+
+Either build it or consume it from Sonatype https://oss.sonatype.org/content/repositories/snapshots/org/ceylon-lang/[snapshot repository]:
+
+.In your pom.xml or settings.xml
+----
+<pluginRepositories>
+  <pluginRepository>
+    <id>sonatype-nexus-snapshots</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+    <layout>default</layout>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </pluginRepository>
+</pluginRepositories>
+----
+
+Here is an https://github.com/vietj/ceylon-maven-example[example project].
+
+== Usage
+
+The Ceylon `cwd` (current working directory) is set to `${project.build.directory}`, this property can be overriden
+by setting the `ceylon.cwd` property affecting any goal of the plugin:
+
+----
+<properties>
+  <ceylon.cwd>/path/to/the/cwd</ceylon.cwd>
+</properties>
+----
+
+In particular this affects the location `modules` directory used by the `compile`, `import-dependency` and `run` phases.
+
+This configuration can be overriden in the plugin configuration, either globally or for a particular phase:
+
+----
+<execution>
+  <goals>
+    <goal>compile</goal>
+  </goals>
+  <configuration>
+    <cwd>/path/to/the/cwd</cwd>
+  </configuration>
+</execution>
+----
+
+=== Import Maven dependencies as Ceylon modules
+
+The `import-dependency` goals imports a Maven dependency in a Ceylon repository:
+
+----
+<execution>
+  <goals>
+    <goal>import-dependency</goal>
+  </goals>
+  <configuration>
+    <moduleImports>
+      <moduleImport>
+        <dependency>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+          <version>1.3</version>
+        </dependency>
+      </moduleImport>
+    </moduleImports>
+  </configuration>
+</execution>
+----
+
+- the default execution phase is `initialize`
+- the default imported module name is `${groupId}.${artifactId}/${version}`
+- the default module repository resolves to `target/modules`
+
+An ommited dependency version is resolved from the project dependencies.
+
+The imported module coordinates can be overriden with the `name` and `version`:
+
+----
+<configuration>
+  <moduleImport>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <name>org.harmcrest.core</name>
+    <version>1.3.0</version>
+  </moduleImport>
+</configuration>
+----
+
+A module descriptor can be provided thanks to the `descriptor` configuration:
+
+----
+<configuration>
+  <moduleImport>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <descriptor>hamcrest.properties</descriptor>
+  </moduleImport>
+</configuration>
+----
+
+A module import can be `forced`:
+
+----
+<configuration>
+  <moduleImport>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <force>true</force>
+  </moduleImport>
+</configuration>
+----
+
+The `out` configuration changes the module output directory:
+
+----
+<configuration>
+  <!-- module will be imported in target/mymodules -->
+  <out>mymodules</out>
+</configuration>
+----
+
+=== Compile Ceylon modules
+
+The `compile` goal compiles Ceylon modules:
+
+----
+<execution>
+  <goals>
+    <goal>compile</goal>
+  </goals>
+</execution>
+----
+
+- the default execution phase is `compile`
+- the default compiled fileset is `${basedir}/src/main/ceylon`
+- the default module repository resolves to `target/modules`
+
+The source fileset can be configured:
+
+----
+<execution>
+  <goals>
+    <goal>compile</goal>
+  </goals>
+  <configuration>
+    <sources>
+      <source>
+        <fileset>
+          <directory>${project.basedir}/src/foo/ceylon</directory>
+        </fileset>
+      </source>
+      <source>
+        <fileset>
+          <directory>${project.basedir}/src/bar/ceylon</directory>
+        </fileset>
+      </source>
+    </sources>
+  </configuration>
+</execution>
+----
+
+Resources can be added:
+
+----
+<configuration>
+  <resources>
+    <resource>
+      <fileset>
+        <directory>${project.basedir}/src/resources</directory>
+      </fileset>
+    </resource>
+  </resources>
+</configuration>
+----
+
+
+Extra user repositories can be added:
+
+----
+<configuration>
+  <userRepos>
+    <userRepo>/path/to/my/module/repo</userRepo>
+  </userRepos>
+</configuration>
+----
+
+The default output repository can be changed:
+
+----
+<configuration>
+  <out>my_modules</out>
+</configuration>
+----
+
+Javac options can be passed:
+
+----
+<configuration>
+  <javacOptions>-target 8</javacOptions>
+</configuration>
+----
+
+The verbosity can be configured:
+
+----
+<configuration>
+  <verbose>true</verbose>
+</configuration>
+----
+
+=== Run a Ceylon module
+
+The `run` goal runs a Ceylon:
+
+----
+<execution>
+  <phase>test</phase>
+  <goals>
+    <goal>run</goal>
+  </goals>
+  <configuration>
+    <module>my.module/1.0.0</module>
+  </configuration>
+</execution>
+----
+
+- the goal does not have default execution phase
+- the default module repository resolves to `target/modules`
+
+Arguments can be passed to the process:
+
+----
+<configuration>
+  <arguments>
+    <argument>first_arg</argument>
+    <argument>second_arg</argument>
+  </arguments>
+</configuration>
+----
+
+Extra user repositories can be added:
+
+----
+<configuration>
+  <userRepos>
+    <userRepo>/path/to/my/module/repo</userRepo>
+  </userRepos>
+</configuration>
+----
+
+The verbosity can be configured:
+
+----
+<configuration>
+  <verbose>true</verbose>
+</configuration>
+----
+
+Finally the execution can be skipped:
+
+----
+<configuration>
+  <skip>true</skip>
+</configuration>
+----
+
+== Eclipse Integration
+
+In order to create a project with the ceylon maven plugin using eclipse start by creating the project using a maven wizzard
+just as you normally would.
+
+Since the default directory for the ceylon source code is `${basedir}/src/main/ceylon` you should create that directory and put
+your modules in there unless you changed the default. Then change your `pom.xml` according to the instructions at the beggining
+of this document. That should be enough for it to work via maven.
+
+In order to make your project work with the Ceylon plugin for Eclipse, first get the Ceylon plugin for Eclipse using
+the Eclipse market place.
+
+Once you have that plugin right click on your project and click _Configure>Convert_ to Ceylon Project.
+
+Then, if you're aren't already in the ceylon perspective get into it by clicking _Window>Switch Perspective>Ceylon_.
+
+Then in the ceylon explorer, right click on your project and click _Build Path>Configure Build Path_.
+
+In the window that pops up navigate to _Ceylon Build>Build Path_. Once you're there, make sure `${basedir}/src/main/ceylon`
+is listed as one of the source folders. If it isn't click add folder and select `${basedir}/src/main/ceylon`.
+
+Then change the output folder at the bottom of the window from `target` to `target/classes`, click OK.
+
+At this point you can create a module in `${basedir}/src/main/ceylon` using the Ceylon plugin for Eclipse.
+
+You should also be able to run that module.
+
+If you have trouble running the module go to the run configurations and make sure that your module is selected.
+
+== Todo
+
+- _test_ goal
+- import sources jar
+- default module id when classifer != null
+- maybe need to handle dependency scope in importer
+- test external snapshot resolution
