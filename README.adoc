@@ -32,7 +32,7 @@ This configuration can be overriden in the plugin configuration, either globally
 
 === Import Maven dependencies as Ceylon modules
 
-The `import-dependency` goals imports a Maven dependency in a Ceylon repository:
+The `import-dependency` goal imports a Maven dependency in a Ceylon repository:
 
 ----
 <execution>
