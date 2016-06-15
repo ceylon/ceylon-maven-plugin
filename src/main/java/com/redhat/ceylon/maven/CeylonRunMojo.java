@@ -2,8 +2,9 @@ package com.redhat.ceylon.maven;
 
 import com.redhat.ceylon.common.ModuleSpec;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunner;
-import com.redhat.ceylon.maven.tools.ExtendedRunnerOptions;
-import com.redhat.ceylon.maven.tools.JavaRunnerImpl;
+import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunnerOptions;
+import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaRunnerImpl;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -39,14 +40,16 @@ public class CeylonRunMojo extends AbstractMojo {
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (!skip) {
-      ExtendedRunnerOptions runnerOptions = new ExtendedRunnerOptions();
+      JavaRunnerOptions runnerOptions = new JavaRunnerOptions();
       runnerOptions.setVerbose(verbose);
       if (userRepos != null) {
         for (String userRepo : userRepos) {
           runnerOptions.addUserRepository(userRepo);
         }
       }
-      runnerOptions.setCwd(cwd);
+      if (cwd != null) {
+          runnerOptions.setWorkingDirectory(cwd.getAbsolutePath());
+      }
       ModuleSpec moduleSpec;
       try {
         moduleSpec = ModuleSpec.parse(module);

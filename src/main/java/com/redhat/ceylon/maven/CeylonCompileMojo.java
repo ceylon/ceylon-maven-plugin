@@ -1,7 +1,5 @@
 package com.redhat.ceylon.maven;
 
-import com.redhat.ceylon.maven.tools.ExtendedCompilerOptions;
-import com.redhat.ceylon.maven.tools.JavaCompilerImpl;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -11,11 +9,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.redhat.ceylon.compiler.java.runtime.tools.*;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
+import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
+
 import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,15 +111,23 @@ public class CeylonCompileMojo extends AbstractMojo {
   }
 
   private void compile(List<File> sourcePath, List<File> resourcePath, List<File> files) throws MojoExecutionException, MojoFailureException {
-    Compiler compiler = new JavaCompilerImpl();
-    ExtendedCompilerOptions options = new ExtendedCompilerOptions();
+    Compiler compiler = new JavaCompilerImpl() {
+        @Override
+        protected List<String> translateOptions(CompilerOptions options) {
+            List<String> translatedOptions = super.translateOptions(options);
+            if (javacOptions != null) {
+                Collections.addAll(translatedOptions, javacOptions.split("\\s+"));
+            }
+            return translatedOptions;
+        }
+    };
+    JavaCompilerOptions options = new JavaCompilerOptions();
     options.setSourcePath(sourcePath);
     options.setResourcePath(resourcePath);
-    options.setCwd(cwd.getAbsolutePath());
-    options.setOutputRepository(out);
-    if (javacOptions != null && javacOptions.length() > 0) {
-      options.setJavacOptions(javacOptions);
+    if (cwd != null) {
+        options.setWorkingDirectory(cwd.getAbsolutePath());
     }
+    options.setOutputRepository(out);
     options.setVerbose(verbose);
     if (userRepos != null) {
       for (String userRepo : userRepos) {
