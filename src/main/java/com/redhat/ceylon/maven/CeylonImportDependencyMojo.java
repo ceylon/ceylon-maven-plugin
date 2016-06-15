@@ -1,10 +1,11 @@
 package com.redhat.ceylon.maven;
 
-import com.redhat.ceylon.common.tools.CeylonTool;
-import com.redhat.ceylon.common.tools.ModuleSpec;
-import com.redhat.ceylon.tools.importjar.CeylonImportJarTool;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -13,7 +14,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.DefaultDependencyResolutionRequest;
-import org.apache.maven.project.DefaultProjectDependenciesResolver;
 import org.apache.maven.project.DependencyResolutionException;
 import org.apache.maven.project.DependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionResult;
@@ -27,11 +27,9 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import com.redhat.ceylon.common.ModuleSpec;
+import com.redhat.ceylon.common.tools.CeylonTool;
+import com.redhat.ceylon.tools.importjar.CeylonImportJarTool;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

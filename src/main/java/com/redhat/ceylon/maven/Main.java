@@ -1,7 +1,7 @@
 package com.redhat.ceylon.maven;
 
+import com.redhat.ceylon.common.ModuleSpec;
 import com.redhat.ceylon.common.tools.CeylonTool;
-import com.redhat.ceylon.common.tools.ModuleSpec;
 import com.redhat.ceylon.tools.importjar.CeylonImportJarTool;
 
 import java.io.File;

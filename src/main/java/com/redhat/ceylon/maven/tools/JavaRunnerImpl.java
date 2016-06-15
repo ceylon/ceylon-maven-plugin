@@ -5,9 +5,10 @@ import com.redhat.ceylon.cmr.ceylon.CeylonUtils;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunner;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunnerOptions;
 import com.redhat.ceylon.compiler.java.runtime.tools.RunnerOptions;
-import com.redhat.ceylon.compiler.java.runtime.tools.impl.BaseModuleLoaderImpl;
 import com.redhat.ceylon.compiler.java.runtime.tools.impl.CmrLogger;
-import com.redhat.ceylon.compiler.java.runtime.tools.impl.FlatpathModuleLoader;
+import com.redhat.ceylon.module.loader.BaseModuleLoaderImpl;
+import com.redhat.ceylon.module.loader.FlatpathModuleLoader;
+import com.redhat.ceylon.module.loader.ModuleNotFoundException;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -22,7 +23,7 @@ public class JavaRunnerImpl implements JavaRunner {
   private ClassLoader moduleClassLoader;
   private String className;
 
-  public JavaRunnerImpl(RunnerOptions options, String module, String version){
+  public JavaRunnerImpl(RunnerOptions options, String module, String version) throws ModuleNotFoundException{
     this.module = module;
 
     ExtendedRunnerOptions extOptions = (ExtendedRunnerOptions) options;

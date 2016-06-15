@@ -1,8 +1,7 @@
 package com.redhat.ceylon.maven;
 
-import com.redhat.ceylon.common.tools.ModuleSpec;
+import com.redhat.ceylon.common.ModuleSpec;
 import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunner;
-import com.redhat.ceylon.compiler.java.runtime.tools.JavaRunnerOptions;
 import com.redhat.ceylon.maven.tools.ExtendedRunnerOptions;
 import com.redhat.ceylon.maven.tools.JavaRunnerImpl;
 import org.apache.maven.plugin.AbstractMojo;
@@ -13,7 +12,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -55,8 +53,8 @@ public class CeylonRunMojo extends AbstractMojo {
       } catch (Exception e) {
         throw new MojoExecutionException("Invalid module name " + module, e);
       }
-      JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
       try {
+        JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
         if (arguments != null) {
           runner.run(arguments);
         } else {
