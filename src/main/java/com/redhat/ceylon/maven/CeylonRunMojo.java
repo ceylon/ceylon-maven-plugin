@@ -64,8 +64,7 @@ public class CeylonRunMojo extends AbstractMojo {
           runner.run();
         }
       } catch (Exception e) {
-        // It shall be a InvocationTargetException so get the cause
-        throw new MojoExecutionException("Execution error", e.getCause());
+        throw new MojoExecutionException("Execution error", e);
       }
     }
   }
