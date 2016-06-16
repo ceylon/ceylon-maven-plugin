@@ -25,9 +25,9 @@
               <moduleImports>
                 <moduleImport>
                   <dependency>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty-codec</artifactId>
-                    <version>4.0.31.Final</version>
+                    <groupId>org.jboss.modules</groupId>
+                    <artifactId>jboss-modules</artifactId>
+                    <version>1.4.4.Final</version>
                   </dependency>
                   <force>true</force>
                 </moduleImport>
