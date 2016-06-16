@@ -91,6 +91,12 @@ public class CeylonCompileMojo extends AbstractMojo {
         }
         resourcePaths.add(new File(resource.getDirectory()));
       }
+    } else {
+      File resourcePath = new File(cwd, "src/main/resources");
+      if (resourcePath.exists() && resourcePath.isDirectory()) {
+        collectSources(resourcePath, files);
+        resourcePaths.add(resourcePath);
+      }
     }
     if (sourcePaths.size() > 0 && files.size() > 0) {
       compile(sourcePaths, resourcePaths, files);
