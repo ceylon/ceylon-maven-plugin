@@ -23,7 +23,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <cwd>${project.build.directory}/other</cwd>
+              <out>other/modules</out>
             </configuration>
           </execution>
           <execution>
