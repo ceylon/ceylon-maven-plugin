@@ -6,30 +6,6 @@ Here is an https://github.com/vietj/ceylon-maven-example[example project].
 
 == Usage
 
-The Ceylon `cwd` (current working directory) is set to `${project.build.directory}`, this property can be overriden
-by setting the `ceylon.cwd` property affecting any goal of the plugin:
-
-----
-<properties>
-  <ceylon.cwd>/path/to/the/cwd</ceylon.cwd>
-</properties>
-----
-
-In particular this affects the location `modules` directory used by the `compile`, `import-dependency` and `run` phases.
-
-This configuration can be overriden in the plugin configuration, either globally or for a particular phase:
-
-----
-<execution>
-  <goals>
-    <goal>compile</goal>
-  </goals>
-  <configuration>
-    <cwd>/path/to/the/cwd</cwd>
-  </configuration>
-</execution>
-----
-
 === Import Maven dependencies as Ceylon modules
 
 The `import-dependency` goal imports a Maven dependency in a Ceylon repository:
@@ -186,6 +162,14 @@ Javac options can be passed:
 ----
 <configuration>
   <javacOptions>-target 8</javacOptions>
+</configuration>
+----
+
+The resulting modules can be exploded to a specific directory:
+
+----
+<configuration>
+  <explodeTo>target/classes</explodeTo>
 </configuration>
 ----
 
