@@ -43,7 +43,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
   @Parameter(readonly = true, property = "basedir")
   private File cwd;
 
-  @Parameter(defaultValue = "modules")
+  @Parameter(defaultValue = "${project.build.directory}/modules")
   private String out;
 
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
