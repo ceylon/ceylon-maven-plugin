@@ -7,6 +7,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.redhat.ceylon.common.FileUtil;
 import com.redhat.ceylon.common.ModuleUtil;
 import com.redhat.ceylon.compiler.java.runtime.tools.*;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
@@ -202,7 +203,7 @@ public class CeylonCompileMojo extends AbstractMojo {
         if (fOut.isDirectory()) {
             File path = new File(ModuleUtil.moduleToPath(fOut, module), version);
             File car = new File(path, module + "-" + version + ".car");
-            unzip(car, explodeTo);
+            unzip(car, FileUtil.applyCwd(cwd, explodeTo));
         }
     }
 
