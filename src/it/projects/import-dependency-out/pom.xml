@@ -22,7 +22,7 @@
               <goal>import-dependency</goal>
             </goals>
             <configuration>
-              <out>foobar</out>
+              <out>target/foobar</out>
               <moduleImports>
                 <moduleImport>
                   <dependency>
