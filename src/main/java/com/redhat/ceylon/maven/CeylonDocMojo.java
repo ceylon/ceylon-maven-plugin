@@ -5,7 +5,6 @@ import com.redhat.ceylon.common.tools.CeylonTool;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -19,6 +18,9 @@ import java.util.List;
  */
 @Mojo(name = "doc")
 public class CeylonDocMojo extends AbstractMojo {
+
+  @Parameter(readonly = true, property = "project.build.directory")
+  private String buildDir;
 
   @Parameter
   private String verbose;
@@ -45,9 +47,13 @@ public class CeylonDocMojo extends AbstractMojo {
       if (sources == null) {
         sources = Collections.singletonList(new File("src/main/ceylon"));
       }
+      if (userRepos != null) {
+        tool.setRepositoryAsStrings(Arrays.asList(userRepos));
+      } else {
+        tool.setRepositoryAsStrings(Arrays.asList(new String[] {buildDir + "/modules"}));
+      }
       tool.setSourceFolders(sources);
       tool.setCwd(cwd);
-      tool.setRepositoryAsStrings(userRepos != null ? Arrays.asList(userRepos) : null);
       tool.setOut(out);
       tool.setVerbose(verbose);
       tool.setModuleSpecs(modules != null ? Arrays.asList(modules) : Collections.<String>emptyList());

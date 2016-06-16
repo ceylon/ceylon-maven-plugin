@@ -20,6 +20,9 @@ import java.io.File;
 @Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
 public class CeylonRunMojo extends AbstractMojo {
 
+  @Parameter(readonly = true, property = "project.build.directory")
+  private String buildDir;
+
   @Parameter(readonly = true, property = "basedir")
   private File cwd;
 
@@ -46,6 +49,8 @@ public class CeylonRunMojo extends AbstractMojo {
         for (String userRepo : userRepos) {
           runnerOptions.addUserRepository(userRepo);
         }
+      } else {
+        runnerOptions.addUserRepository(buildDir + "/modules");
       }
       if (cwd != null) {
           runnerOptions.setWorkingDirectory(cwd.getAbsolutePath());

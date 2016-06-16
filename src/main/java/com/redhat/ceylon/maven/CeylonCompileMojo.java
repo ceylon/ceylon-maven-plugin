@@ -27,6 +27,9 @@ import java.util.Set;
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE)
 public class CeylonCompileMojo extends AbstractMojo {
 
+  @Parameter(readonly = true, property = "project.build.directory")
+  private String buildDir;
+
   @Parameter(defaultValue = "false")
   private boolean verbose;
 
@@ -139,6 +142,8 @@ public class CeylonCompileMojo extends AbstractMojo {
       for (String userRepo : userRepos) {
         options.addUserRepository(userRepo);
       }
+    } else {
+      options.addUserRepository(buildDir + "/modules");
     }
     options.setFiles(files);
     boolean ok = compiler.compile(options, new CompilationListener() {
