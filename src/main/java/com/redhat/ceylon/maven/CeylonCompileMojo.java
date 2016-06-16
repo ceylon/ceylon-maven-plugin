@@ -7,6 +7,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.redhat.ceylon.common.ModuleUtil;
 import com.redhat.ceylon.compiler.java.runtime.tools.*;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
 import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
@@ -14,12 +15,20 @@ import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
 import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -50,6 +59,9 @@ public class CeylonCompileMojo extends AbstractMojo {
 
   @Parameter
   private String javacOptions;
+
+  @Parameter
+  private File explodeTo;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     ArrayList<File> files = new ArrayList<>();
@@ -174,11 +186,67 @@ public class CeylonCompileMojo extends AbstractMojo {
 
       public void moduleCompiled(String module, String version) {
         getLog().info("Compiled module " + module + "/" + version);
+        if (explodeTo != null) {
+            explodeModule(module, version);
+        }
       }
     });
 
     if (!ok) {
       throw new MojoExecutionException("Compilation failed");
     }
+  }
+  
+    protected void explodeModule(String module, String version) {
+        File fOut = new File(out);
+        if (fOut.isDirectory()) {
+            File path = new File(ModuleUtil.moduleToPath(fOut, module), version);
+            File car = new File(path, module + "-" + version + ".car");
+            unzip(car, explodeTo);
+        }
+    }
+
+    private void unzip(File zip, File targetDir) {
+      try {
+          final ZipFile zipFile = new ZipFile(zip);
+          try {
+              final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+              while (entries.hasMoreElements()) {
+                  final ZipEntry ze = entries.nextElement();
+                  final File file = new File(targetDir, ze.getName());
+                  if (ze.isDirectory()) {
+                      if (file.mkdirs() == false)
+                          throw new IllegalArgumentException("Cannot create dir: " + file);
+                  } else {
+                      final FileOutputStream fos = new FileOutputStream(file);
+                      copyStream(zipFile.getInputStream(ze), fos);
+                  }
+              }
+          } finally {
+              zipFile.close();
+          }
+      } catch (IOException e) {
+          throw new IllegalArgumentException(e);
+      }
+  }
+
+  private static void copyStream(final InputStream in, final OutputStream out) throws IOException {
+      final byte[] bytes = new byte[8192];
+      int cnt;
+      try {
+          while ((cnt = in.read(bytes)) != -1) {
+              out.write(bytes, 0, cnt);
+          }
+      } finally {
+          safeClose(in);
+          safeClose(out);
+      }
+  }
+
+  private static void safeClose(Closeable c) {
+      try {
+          c.close();
+      } catch (Exception ignored) {
+      }
   }
 }
