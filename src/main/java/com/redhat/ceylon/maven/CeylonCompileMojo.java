@@ -69,7 +69,7 @@ public class CeylonCompileMojo extends AbstractMojo {
         sourcePaths.add(new File(source.getDirectory()));
       }
     } else {
-      File sourcePath = new File("src/main/ceylon");
+      File sourcePath = new File(cwd, "src/main/ceylon");
       if (sourcePath.exists() && sourcePath.isDirectory()) {
         collectSources(sourcePath, files);
         sourcePaths.add(sourcePath);
