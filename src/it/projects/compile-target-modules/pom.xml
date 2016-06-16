@@ -22,7 +22,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <out>the_modules</out>
+              <out>target/the_modules</out>
             </configuration>
           </execution>
         </executions>
