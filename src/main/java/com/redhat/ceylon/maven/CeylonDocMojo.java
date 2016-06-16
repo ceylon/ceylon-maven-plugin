@@ -23,7 +23,7 @@ public class CeylonDocMojo extends AbstractMojo {
   @Parameter
   private String verbose;
 
-  @Parameter(property = "ceylon.cwd", defaultValue = "${project.build.directory}")
+  @Parameter(readonly = true, property = "basedir")
   private File cwd;
 
   @Parameter(defaultValue = "modules")

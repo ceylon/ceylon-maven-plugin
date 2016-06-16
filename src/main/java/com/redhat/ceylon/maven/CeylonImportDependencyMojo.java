@@ -40,7 +40,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
   @Parameter(required = true)
   protected ModuleImport[] moduleImports;
 
-  @Parameter(property = "ceylon.cwd", defaultValue = "${project.build.directory}")
+  @Parameter(readonly = true, property = "basedir")
   private File cwd;
 
   @Parameter(defaultValue = "modules")

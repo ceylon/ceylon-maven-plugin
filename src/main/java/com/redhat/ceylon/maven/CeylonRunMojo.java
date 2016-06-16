@@ -20,7 +20,7 @@ import java.io.File;
 @Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
 public class CeylonRunMojo extends AbstractMojo {
 
-  @Parameter(property = "ceylon.cwd", defaultValue = "${project.build.directory}")
+  @Parameter(readonly = true, property = "basedir")
   private File cwd;
 
   @Parameter(defaultValue = "false")
