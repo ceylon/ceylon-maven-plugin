@@ -216,7 +216,7 @@ public class CeylonCompileMojo extends AbstractMojo {
                   final ZipEntry ze = entries.nextElement();
                   final File file = new File(targetDir, ze.getName());
                   if (ze.isDirectory()) {
-                      if (file.mkdirs() == false)
+                      if (!file.exists() && file.mkdirs() == false)
                           throw new IllegalArgumentException("Cannot create dir: " + file);
                   } else {
                       final FileOutputStream fos = new FileOutputStream(file);
