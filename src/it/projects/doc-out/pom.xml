@@ -30,7 +30,7 @@
             </goals>
             <phase>compile</phase>
             <configuration>
-              <out>the_modules</out>
+                <out>target/the_modules</out>
               <modules>
                 <module>mymodule</module>
               </modules>
