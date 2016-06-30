@@ -92,7 +92,7 @@ The `out` configuration changes the module output directory:
 
 === Compile Ceylon modules
 
-The `compile` goal compiles Ceylon modules:
+The `compile` and `compile-js` goals compile Ceylon modules, for the JVM and JS backends respectively:
 
 ----
 <execution>
@@ -183,7 +183,7 @@ The verbosity can be configured:
 
 === Run a Ceylon module
 
-The `run` goal runs a Ceylon:
+The `run` and `run-js` goals run a Ceylon application, for the JVM and JS backends respectively:
 
 ----
 <execution>
