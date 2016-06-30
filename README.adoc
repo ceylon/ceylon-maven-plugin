@@ -311,10 +311,11 @@ Plugin version are named after Ceylon release using an extra number for its own 
 == Changelog
 
  - 1.2.3 :
-    - Repository lookup now looks in the proper folder (`target/modules`) by default
-    - Becasue of that the `cwd` option could be removed
-    - Added `compile-js` and `run-js` goals
-    - Added `explodeTo` option for the compilers
+ 
+   * Repository lookup now looks in the proper folder (`target/modules`) by default
+   * Becasue of that the `cwd` option could be removed
+   * Added `compile-js` and `run-js` goals
+   * Added `explodeTo` option for the compilers
 
 == Todo
 
