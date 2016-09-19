@@ -6,7 +6,7 @@
 
   <groupId>org.ceylon-lang.test</groupId>
   <artifactId>compile-maven-import</artifactId>
-  <version>1.2.3-SNAPSHOT</version>
+  <version>1.3.0</version>
 
   <name>compile-maven-import</name>
 
