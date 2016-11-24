@@ -144,6 +144,7 @@ public class CeylonCompileMojo extends AbstractMojo {
         }
     };
     JavaCompilerOptions options = new JavaCompilerOptions();
+    options.setJavacTarget(getDefaultTarget());
     options.setSourcePath(sourcePath);
     options.setResourcePath(resourcePath);
     if (cwd != null) {
@@ -196,6 +197,11 @@ public class CeylonCompileMojo extends AbstractMojo {
     if (!ok) {
       throw new MojoExecutionException("Compilation failed");
     }
+  }
+  
+  private static Long getDefaultTarget() {
+      String dottedVersion = System.getProperty("java.version");
+      return Long.parseLong(dottedVersion.split("\\.|_|-")[1]);
   }
   
     protected void explodeModule(String module, String version) {
