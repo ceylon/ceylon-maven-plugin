@@ -1,6 +1,7 @@
 package com.redhat.ceylon.maven;
 
 import com.redhat.ceylon.common.ModuleSpec;
+import com.redhat.ceylon.common.config.CeylonConfig;
 import com.redhat.ceylon.compiler.java.runtime.tools.RunnerOptions;
 import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaScriptRunnerImpl;
 
@@ -42,7 +43,8 @@ public class CeylonRunJsMojo extends AbstractMojo {
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (!skip) {
-      RunnerOptions runnerOptions = new RunnerOptions();
+      CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
+      RunnerOptions runnerOptions = RunnerOptions.fromConfig(cfg);
       runnerOptions.setVerbose(verbose);
       if (userRepos != null) {
         for (String userRepo : userRepos) {

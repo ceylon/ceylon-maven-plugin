@@ -7,6 +7,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.redhat.ceylon.common.config.CeylonConfig;
 import com.redhat.ceylon.compiler.java.runtime.tools.*;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
 import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaScriptCompilerImpl;
@@ -16,6 +17,7 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -116,8 +118,10 @@ public class CeylonCompileJsMojo extends AbstractMojo {
   }
 
   private void compile(List<File> sourcePath, List<File> resourcePath, List<File> files) throws MojoExecutionException, MojoFailureException {
+    CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
     Compiler compiler = new JavaScriptCompilerImpl();
-    CompilerOptions options = new CompilerOptions();
+    CompilerOptions options = CompilerOptions.fromConfig(cfg);
+    options.setModules(Collections.<String>emptyList());
     options.setSourcePath(sourcePath);
     options.setResourcePath(resourcePath);
     if (cwd != null) {

@@ -1,21 +1,5 @@
 package com.redhat.ceylon.maven;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
-import com.redhat.ceylon.common.FileUtil;
-import com.redhat.ceylon.common.ModuleUtil;
-import com.redhat.ceylon.compiler.java.runtime.tools.*;
-import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
-import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
-
-import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +14,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.shared.model.fileset.FileSet;
+import org.apache.maven.shared.model.fileset.util.FileSetManager;
+
+import com.redhat.ceylon.common.FileUtil;
+import com.redhat.ceylon.common.ModuleUtil;
+import com.redhat.ceylon.common.config.CeylonConfig;
+import com.redhat.ceylon.compiler.java.runtime.tools.CompilationListener;
+import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
+import com.redhat.ceylon.compiler.java.runtime.tools.CompilerOptions;
+import com.redhat.ceylon.compiler.java.runtime.tools.JavaCompilerOptions;
+import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -58,6 +60,21 @@ public class CeylonCompileMojo extends AbstractMojo {
   @Parameter
   private String[] userRepos;
 
+  @Parameter
+  private boolean flatClasspath;
+
+  @Parameter
+  private boolean autoExportMavenDependencies;
+
+  @Parameter
+  private boolean fullyExportMavenDependencies;
+
+  @Parameter
+  private String jdkProvider;
+
+  @Parameter
+  private List<String> aptModules;
+  
   @Parameter
   private String javacOptions;
 
@@ -143,7 +160,9 @@ public class CeylonCompileMojo extends AbstractMojo {
             return translatedOptions;
         }
     };
-    JavaCompilerOptions options = new JavaCompilerOptions();
+    CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
+    JavaCompilerOptions options = JavaCompilerOptions.fromConfig(cfg);
+    options.setModules(Collections.<String>emptyList());
     options.setJavacTarget(getDefaultTarget());
     options.setSourcePath(sourcePath);
     options.setResourcePath(resourcePath);
@@ -151,6 +170,13 @@ public class CeylonCompileMojo extends AbstractMojo {
         options.setWorkingDirectory(cwd.getAbsolutePath());
     }
     options.setOutputRepository(out);
+    options.setFlatClasspath(flatClasspath);
+    options.setAutoExportMavenDependencies(autoExportMavenDependencies);
+    options.setFullyExportMavenDependencies(fullyExportMavenDependencies);
+    options.setJdkProvider(jdkProvider);
+    if (aptModules != null) {
+        options.setAptModules(aptModules);
+    }
     options.setVerbose(verbose);
     if (userRepos != null) {
       for (String userRepo : userRepos) {
