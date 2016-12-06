@@ -157,6 +157,8 @@ public class CeylonCompileMojo extends AbstractMojo {
             if (javacOptions != null) {
                 Collections.addAll(translatedOptions, javacOptions.split("\\s+"));
             }
+            // Temporary until 1.3.2 is released
+            Collections.addAll(translatedOptions, "-source", getDefaultTarget().toString());
             return translatedOptions;
         }
     };
