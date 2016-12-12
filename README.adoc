@@ -303,14 +303,18 @@ If you have trouble running the module go to the run configurations and make sur
 
 Plugin versions are named after Ceylon releases using an extra number for its own numbering, for example:
 
-- 1.2.0 : first version for Ceylon 1.2.0
-- 1.2.0.1 : next version for Ceylon 1.2.0
-- 1.2.1 : first version for Ceylon 1.2.1
+- 1.2.0: first version for Ceylon 1.2.0
+- 1.2.0.1: next version for Ceylon 1.2.0
+- 1.2.1: first version for Ceylon 1.2.1
 - etc...
 
 == Changelog
 
- - 1.2.3 :
+ - 1.3.1:
+ 
+   * Fixed problem with unset `options.javacTarget`
+
+ - 1.3.0:
  
    * Repository lookup now looks in the proper folder (`target/modules`) by default
    * Becasue of that the `cwd` option could be removed
@@ -319,7 +323,7 @@ Plugin versions are named after Ceylon releases using an extra number for its ow
 
 == Todo
 
-- compile : specify module
+- compile: specify module
 - _test_ goal
 - import sources jar
 - default module id when classifer != null
