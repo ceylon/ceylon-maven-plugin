@@ -181,6 +181,11 @@ The verbosity can be configured:
 </configuration>
 ----
 
+Valid values are:
+
+- `true`, which has the same effect as the `--verbose` flag
+- any combination of `all, loader, ast, code, cmr, benchmark`, which has the same effect as the `--verbose=<...>` flag
+
 === Run a Ceylon module
 
 The `run` and `run-js` goals run a Ceylon application, for the JVM and JS backends respectively:
@@ -228,6 +233,11 @@ The verbosity can be configured:
   <verbose>true</verbose>
 </configuration>
 ----
+
+Valid values are:
+
+- `true`, which has the same effect as the `--verbose` flag
+- any combination of `all, loader, cmr`, which has the same effect as the `--verbose=<...>` flag
 
 Finally the execution can be skipped:
 

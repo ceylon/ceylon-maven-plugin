@@ -27,8 +27,8 @@ public class CeylonRunMojo extends AbstractMojo {
   @Parameter(readonly = true, property = "basedir")
   private File cwd;
 
-  @Parameter(defaultValue = "false")
-  private boolean verbose;
+  @Parameter
+  private String verbose;
 
   @Parameter(required = true)
   private String module;
@@ -46,7 +46,12 @@ public class CeylonRunMojo extends AbstractMojo {
     if (!skip) {
       CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
       JavaRunnerOptions runnerOptions = JavaRunnerOptions.fromConfig(cfg);
-      runnerOptions.setVerbose(verbose);
+      if (verbose != null) {
+        runnerOptions.setVerbose(true);
+        if (!"true".equals(verbose)) {
+          runnerOptions.setVerboseCategory(verbose);
+        }
+      }
       if (userRepos != null) {
         for (String userRepo : userRepos) {
           runnerOptions.addUserRepository(userRepo);

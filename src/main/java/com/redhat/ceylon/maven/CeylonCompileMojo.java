@@ -42,8 +42,8 @@ public class CeylonCompileMojo extends AbstractMojo {
   @Parameter(readonly = true, property = "project.build.directory")
   private String buildDir;
 
-  @Parameter(defaultValue = "false")
-  private boolean verbose;
+  @Parameter
+  private String verbose;
 
   @Parameter(readonly = true, property = "basedir")
   private File cwd;
@@ -179,7 +179,12 @@ public class CeylonCompileMojo extends AbstractMojo {
     if (aptModules != null) {
         options.setAptModules(aptModules);
     }
-    options.setVerbose(verbose);
+    if (verbose != null) {
+      options.setVerbose(true);
+      if (!"true".equals(verbose)) {
+        options.setVerboseCategory(verbose);
+      }
+    }
     if (userRepos != null) {
       for (String userRepo : userRepos) {
         options.addUserRepository(userRepo);
