@@ -1,20 +1,5 @@
 package com.redhat.ceylon.maven;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
-import com.redhat.ceylon.common.config.CeylonConfig;
-import com.redhat.ceylon.compiler.java.runtime.tools.*;
-import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
-import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaScriptCompilerImpl;
-
-import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,20 +7,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.shared.model.fileset.FileSet;
+import org.apache.maven.shared.model.fileset.util.FileSetManager;
+
+import com.redhat.ceylon.common.config.CeylonConfig;
+import com.redhat.ceylon.compiler.java.runtime.tools.CompilationListener;
+import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
+import com.redhat.ceylon.compiler.java.runtime.tools.CompilerOptions;
+import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaScriptCompilerImpl;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "compile-js", defaultPhase = LifecyclePhase.COMPILE)
-public class CeylonCompileJsMojo extends AbstractMojo {
-
-  @Parameter(readonly = true, property = "project.build.directory")
-  private String buildDir;
-
-  @Parameter
-  private String verbose;
-
-  @Parameter(readonly = true, property = "basedir")
-  private File cwd;
+public class CeylonCompileJsMojo extends AbstractCeylonMojo {
 
   @Parameter(defaultValue = "${project.build.directory}/modules")
   private String out;

@@ -1,12 +1,10 @@
 package com.redhat.ceylon.maven;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -17,10 +15,7 @@ import org.apache.maven.project.DefaultDependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionException;
 import org.apache.maven.project.DependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionResult;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -35,25 +30,13 @@ import com.redhat.ceylon.tools.importjar.CeylonImportJarTool;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "import-dependency", defaultPhase = LifecyclePhase.INITIALIZE)
-public class CeylonImportDependencyMojo extends AbstractMojo {
+public class CeylonImportDependencyMojo extends AbstractCeylonMojo {
 
   @Parameter(required = true)
   protected ModuleImport[] moduleImports;
 
-  @Parameter(readonly = true, property = "basedir")
-  private File cwd;
-
   @Parameter(defaultValue = "${project.build.directory}/modules")
   private String out;
-
-  @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
-  protected RepositorySystemSession repoSession;
-
-  @Parameter(defaultValue = "${project}", readonly = true)
-  public MavenProject project;
-
-  @Component
-  protected RepositorySystem repoSystem;
 
   @Component
   protected ProjectDependenciesResolver resolver;

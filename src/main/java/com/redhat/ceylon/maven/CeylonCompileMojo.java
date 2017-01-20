@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -37,16 +36,7 @@ import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE)
-public class CeylonCompileMojo extends AbstractMojo {
-
-  @Parameter(readonly = true, property = "project.build.directory")
-  private String buildDir;
-
-  @Parameter
-  private String verbose;
-
-  @Parameter(readonly = true, property = "basedir")
-  private File cwd;
+public class CeylonCompileMojo extends AbstractCeylonMojo {
 
   @Parameter(defaultValue = "${project.build.directory}/modules")
   private String out;
@@ -80,7 +70,7 @@ public class CeylonCompileMojo extends AbstractMojo {
 
   @Parameter
   private File explodeTo;
-
+  
   public void execute() throws MojoExecutionException, MojoFailureException {
     ArrayList<File> files = new ArrayList<>();
     ArrayList<File> sourcePaths = new ArrayList<>();

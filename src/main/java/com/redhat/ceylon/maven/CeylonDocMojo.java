@@ -17,16 +17,8 @@ import java.util.List;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "doc")
-public class CeylonDocMojo extends AbstractMojo {
+public class CeylonDocMojo extends AbstractCeylonMojo {
 
-  @Parameter(readonly = true, property = "project.build.directory")
-  private String buildDir;
-
-  @Parameter
-  private String verbose;
-
-  @Parameter(readonly = true, property = "basedir")
-  private File cwd;
 
   @Parameter(defaultValue = "${project.build.directory}/modules")
   private String out;
@@ -55,7 +47,9 @@ public class CeylonDocMojo extends AbstractMojo {
       tool.setSourceFolders(sources);
       tool.setCwd(cwd);
       tool.setOut(out);
-      tool.setVerbose(verbose);
+      if (verbose != null) {
+    	  tool.setVerbose(verbose);
+      }
       tool.setModuleSpecs(modules != null ? Arrays.asList(modules) : Collections.<String>emptyList());
       tool.initialize(new CeylonTool());
       tool.run();

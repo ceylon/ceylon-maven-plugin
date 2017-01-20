@@ -1,33 +1,21 @@
 package com.redhat.ceylon.maven;
 
-import com.redhat.ceylon.common.ModuleSpec;
-import com.redhat.ceylon.common.config.CeylonConfig;
-import com.redhat.ceylon.compiler.java.runtime.tools.RunnerOptions;
-import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaScriptRunnerImpl;
-
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
+import com.redhat.ceylon.common.ModuleSpec;
+import com.redhat.ceylon.common.config.CeylonConfig;
+import com.redhat.ceylon.compiler.java.runtime.tools.RunnerOptions;
+import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaScriptRunnerImpl;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "run-js", defaultPhase = LifecyclePhase.NONE)
-public class CeylonRunJsMojo extends AbstractMojo {
-
-  @Parameter(readonly = true, property = "project.build.directory")
-  private String buildDir;
-
-  @Parameter(readonly = true, property = "basedir")
-  private File cwd;
-
-  @Parameter
-  private String verbose;
+public class CeylonRunJsMojo extends AbstractCeylonMojo {
 
   @Parameter(required = true)
   private String module;
