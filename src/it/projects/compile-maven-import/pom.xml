@@ -10,6 +10,14 @@
 
   <name>compile-maven-import</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+      <version>2.9.4</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
