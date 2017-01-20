@@ -124,7 +124,7 @@ public class CeylonImportDependencyMojo extends AbstractMojo {
       if (moduleVersion == null) {
         moduleVersion = dependencyVersion;
       }
-      ModuleSpec moduleSpec = new ModuleSpec(moduleName, moduleVersion);
+      ModuleSpec moduleSpec = new ModuleSpec("maven", moduleName, moduleVersion);
       moduleSpecs.add(moduleSpec);
       tool.setModuleSpec(moduleSpec);
       tools.add(tool);
