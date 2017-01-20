@@ -140,6 +140,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
   }
 
   private void compile(List<File> sourcePath, List<File> resourcePath, List<File> files) throws MojoExecutionException, MojoFailureException {
+	exportDependencies();
     Compiler compiler = new JavaCompilerImpl() {
         @Override
         protected List<String> translateOptions(CompilerOptions options) {
@@ -182,6 +183,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     } else {
       options.addUserRepository(buildDir + "/modules");
     }
+    addExportedUserRepository(options);
     if(ceylonHome != null)
     	options.setSystemRepository(ceylonHome + "/repo");
     options.setFiles(files);

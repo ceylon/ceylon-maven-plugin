@@ -31,6 +31,7 @@ public class CeylonRunJsMojo extends AbstractCeylonMojo {
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (!skip) {
+      exportDependencies();
       CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
       RunnerOptions runnerOptions = RunnerOptions.fromConfig(cfg);
       if (verbose != null) {
@@ -46,6 +47,7 @@ public class CeylonRunJsMojo extends AbstractCeylonMojo {
       } else {
         runnerOptions.addUserRepository(buildDir + "/modules");
       }
+      addExportedUserRepository(runnerOptions);
       if(ceylonHome != null)
       	runnerOptions.setSystemRepository(ceylonHome + "/repo");
       if (cwd != null) {

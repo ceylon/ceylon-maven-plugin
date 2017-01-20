@@ -108,6 +108,7 @@ public class CeylonCompileJsMojo extends AbstractCeylonMojo {
   }
 
   private void compile(List<File> sourcePath, List<File> resourcePath, List<File> files) throws MojoExecutionException, MojoFailureException {
+    exportDependencies();
     CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
     Compiler compiler = new JavaScriptCompilerImpl();
     CompilerOptions options = CompilerOptions.fromConfig(cfg);
@@ -131,6 +132,7 @@ public class CeylonCompileJsMojo extends AbstractCeylonMojo {
     } else {
       options.addUserRepository(buildDir + "/modules");
     }
+    addExportedUserRepository(options);
     if(ceylonHome != null)
     	options.setSystemRepository(ceylonHome + "/repo");
     options.setFiles(files);
