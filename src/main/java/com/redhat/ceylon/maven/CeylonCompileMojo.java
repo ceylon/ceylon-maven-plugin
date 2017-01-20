@@ -182,6 +182,8 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     } else {
       options.addUserRepository(buildDir + "/modules");
     }
+    if(ceylonHome != null)
+    	options.setSystemRepository(ceylonHome + "/repo");
     options.setFiles(files);
     boolean ok = compiler.compile(options, new CompilationListener() {
 

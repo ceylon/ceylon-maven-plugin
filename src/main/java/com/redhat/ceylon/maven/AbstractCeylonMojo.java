@@ -33,6 +33,10 @@ import com.redhat.ceylon.common.Versions;
 import com.redhat.ceylon.compiler.java.runtime.tools.Options;
 
 public abstract class AbstractCeylonMojo extends AbstractMojo {
+	
+	@Parameter(readonly = true, property = "ceylon.home")
+	protected String ceylonHome;
+
 	@Parameter(readonly = true, property = "project.build.directory")
 	protected String buildDir;
 

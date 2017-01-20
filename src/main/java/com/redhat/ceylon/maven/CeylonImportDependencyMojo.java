@@ -94,6 +94,8 @@ public class CeylonImportDependencyMojo extends AbstractCeylonMojo {
       if (moduleImport.getForce()) {
         tool.setForce(true);
       }
+      if(ceylonHome != null)
+      	tool.setSystemRepository(ceylonHome + "/repo");
       tool.setCwd(cwd);
       tool.setOut(out);
       tool.setFile(result.getArtifact().getFile());

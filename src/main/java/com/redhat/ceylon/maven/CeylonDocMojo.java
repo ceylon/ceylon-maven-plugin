@@ -19,7 +19,6 @@ import java.util.List;
 @Mojo(name = "doc")
 public class CeylonDocMojo extends AbstractCeylonMojo {
 
-
   @Parameter(defaultValue = "${project.build.directory}/modules")
   private String out;
 
@@ -44,6 +43,8 @@ public class CeylonDocMojo extends AbstractCeylonMojo {
       } else {
         tool.setRepositoryAsStrings(Arrays.asList(new String[] {buildDir + "/modules"}));
       }
+      if(ceylonHome != null)
+      	tool.setSystemRepository(ceylonHome + "/repo");
       tool.setSourceFolders(sources);
       tool.setCwd(cwd);
       tool.setOut(out);

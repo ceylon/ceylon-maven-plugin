@@ -47,6 +47,8 @@ public class CeylonRunMojo extends AbstractCeylonMojo {
       } else {
         runnerOptions.addUserRepository(buildDir + "/modules");
       }
+      if(ceylonHome != null)
+      	runnerOptions.setSystemRepository(ceylonHome + "/repo");
       if (cwd != null) {
           runnerOptions.setWorkingDirectory(cwd.getAbsolutePath());
       }
