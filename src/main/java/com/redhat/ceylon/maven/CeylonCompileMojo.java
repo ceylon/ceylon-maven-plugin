@@ -13,8 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -22,6 +26,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.eclipse.aether.util.artifact.JavaScopes;
 
 import com.redhat.ceylon.common.FileUtil;
 import com.redhat.ceylon.common.ModuleUtil;
@@ -187,6 +193,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     if(ceylonHome != null)
     	options.setSystemRepository(ceylonHome + "/repo");
     options.setFiles(files);
+    final MojoExecutionException[] x = new MojoExecutionException[1];
     boolean ok = compiler.compile(options, new CompilationListener() {
 
       public void error(File file, long line, long column, String message) {
@@ -218,9 +225,16 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
         if (explodeTo != null) {
             explodeModule(module, version);
         }
+        try {
+			checkDependencies(module, version);
+		} catch (MojoExecutionException e) {
+			x[0] = e;
+		}
       }
     });
 
+    if(x[0] != null)
+    	throw x[0];
     if (!ok) {
       throw new MojoExecutionException("Compilation failed");
     }
@@ -239,8 +253,110 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
             unzip(car, FileUtil.applyCwd(cwd, explodeTo));
         }
     }
+    
+    private void checkDependencies(String module, String version) throws MojoExecutionException{
+      File fOut = new File(out);
+      if (fOut.isDirectory()) {
+          File path = new File(ModuleUtil.moduleToPath(fOut, module), version);
+          File car = new File(path, module + "-" + version + ".car");
+      	  MavenXpp3Reader reader = new MavenXpp3Reader();
+      	  try(ZipFile zipFile = new ZipFile(car)){
+      		  // FIXME: this makes assumptions about the group/art name decided by Ceylon
+      		  int sep = module.lastIndexOf('.');
+      		  String groupId;
+      		  String artifactId;
+      		  if(sep != -1){
+      		    artifactId = module.substring(sep+1);
+      		    groupId = module.substring(0, sep);
+      		  }else{
+      			groupId = artifactId = module;
+      		  }
+      		  ZipEntry entry = zipFile.getEntry("META-INF/maven/"+groupId+"/"+artifactId+"/pom.xml");
+      		  try(InputStream is = zipFile.getInputStream(entry)){
+      			  Model model = reader.read(is);
+      			  compareDependencies(model);
+      		  } catch (XmlPullParserException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+      	  } catch (ZipException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+      }
+    }
 
-    private void unzip(File zip, File targetDir) {
+	private void compareDependencies(Model model) throws MojoExecutionException {
+    	Set<Dependency> projectDependencies = new HashSet<>(project.getDependencies());
+    	Set<Dependency> modelDependencies = new HashSet<>(model.getDependencies());
+    	OUTER:
+    	for (Dependency pomDependency : project.getDependencies()) {
+    		// skip test deps
+    		if(pomDependency.getScope().equals(JavaScopes.TEST)){
+    			projectDependencies.remove(pomDependency);
+    			continue;
+    		}
+    		String pomGroupId = pomDependency.getGroupId();
+    		String pomArtifactId = pomDependency.getArtifactId();
+    		String pomVersion = pomDependency.getVersion();
+			for (Dependency modelDependency : model.getDependencies()) {
+	    		String modelGroupId = modelDependency.getGroupId();
+	    		String modelArtifactId = modelDependency.getArtifactId();
+	    		// FIXME: workaround for ceylon bug
+	    		int colon = modelArtifactId.indexOf(':');
+	    		if(colon != -1){
+	    			modelGroupId += "."+modelArtifactId.substring(0, colon);
+	    			modelArtifactId = modelArtifactId.substring(colon+1);
+	    		}
+	    		String modelVersion = modelDependency.getVersion();
+	    		if(pomGroupId.equals(modelGroupId)
+	    				&& pomArtifactId.equals(modelArtifactId)
+	    				&& pomVersion.equals(modelVersion)){
+	    			// we found a match, let's remove both and move to the next
+	    			projectDependencies.remove(pomDependency);
+	    			modelDependencies.remove(modelDependency);
+	    			continue OUTER;
+	    		}
+			}
+		}
+    	if(projectDependencies.isEmpty()
+    			&& modelDependencies.isEmpty())
+    		return; // OK
+    	
+    	StringBuilder sb = new StringBuilder();
+    	// At this point, the sets are left with the differences where each are errors
+    	if(!projectDependencies.isEmpty()){
+    		sb.append("pom.xml dependencies missing from module.ceylon descriptor: ");
+    		boolean once = true;
+    		for (Dependency projectDependency : projectDependencies) {
+    			if(once)
+    				once = false;
+    			else
+    				sb.append(", ");
+    			sb.append(projectDependency.getGroupId()+":"+projectDependency.getArtifactId()+"/"+projectDependency.getVersion());
+    		}
+    		sb.append(".");
+        	if(!modelDependencies.isEmpty())
+        		sb.append(" ");
+    	}
+    	if(!modelDependencies.isEmpty()){
+    		sb.append("module.ceylon dependencies missing from pom.xml descriptor: ");
+    		boolean once = true;
+    		for (Dependency modelDependency : modelDependencies) {
+    			if(once)
+    				once = false;
+    			else
+    				sb.append(", ");
+    			sb.append(modelDependency.getGroupId()+":"+modelDependency.getArtifactId()+"/"+modelDependency.getVersion());
+    		}
+    	}
+        throw new MojoExecutionException("Descriptors mismatch: "+sb.toString());
+	}
+
+	private void unzip(File zip, File targetDir) {
       try {
           final ZipFile zipFile = new ZipFile(zip);
           try {
