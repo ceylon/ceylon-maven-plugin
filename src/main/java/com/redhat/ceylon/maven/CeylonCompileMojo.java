@@ -57,6 +57,9 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
   private String[] userRepos;
 
   @Parameter
+  private boolean disablePomChecks;
+
+  @Parameter
   private boolean flatClasspath;
 
   @Parameter
@@ -226,7 +229,8 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
             explodeModule(module, version);
         }
         try {
-			checkDependencies(module, version);
+        	if(!disablePomChecks)
+        		checkDependencies(module, version);
 		} catch (MojoExecutionException e) {
 			x[0] = e;
 		}

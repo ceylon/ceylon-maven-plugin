@@ -23,6 +23,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <disablePomChecks>true</disablePomChecks>
               <sources>
                 <source>
                   <directory>${project.basedir}/src/foo/ceylon</directory>
@@ -37,6 +38,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <disablePomChecks>true</disablePomChecks>
               <userRepos>
                 <userRepo>target/foo</userRepo>
               </userRepos>
