@@ -16,6 +16,11 @@
       <artifactId>camel-core</artifactId>
       <version>2.9.4</version>
     </dependency>
+    <dependency>
+      <groupId>org.ceylon-lang</groupId>
+      <artifactId>ceylon.language</artifactId>
+      <version>${plugin.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

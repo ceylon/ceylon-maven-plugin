@@ -10,6 +10,14 @@
 
   <name>compile-explode</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.ceylon-lang</groupId>
+      <artifactId>ceylon.language</artifactId>
+      <version>${plugin.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

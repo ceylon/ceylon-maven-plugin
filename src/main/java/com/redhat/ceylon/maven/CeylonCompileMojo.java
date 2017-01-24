@@ -31,6 +31,7 @@ import org.eclipse.aether.util.artifact.JavaScopes;
 
 import com.redhat.ceylon.common.FileUtil;
 import com.redhat.ceylon.common.ModuleUtil;
+import com.redhat.ceylon.common.Versions;
 import com.redhat.ceylon.common.config.CeylonConfig;
 import com.redhat.ceylon.compiler.java.runtime.tools.CompilationListener;
 import com.redhat.ceylon.compiler.java.runtime.tools.Compiler;
@@ -295,7 +296,13 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
 
 	private void compareDependencies(Model model) throws MojoExecutionException {
     	Set<Dependency> projectDependencies = new HashSet<>(project.getDependencies());
-    	Set<Dependency> modelDependencies = new HashSet<>(model.getDependencies());
+    	Set<Dependency> augmentedModelDependencies = new HashSet<>(model.getDependencies());
+    	Dependency languageDep = new Dependency();
+    	languageDep.setGroupId("org.ceylon-lang");
+    	languageDep.setArtifactId("ceylon.language");
+    	languageDep.setVersion(Versions.CEYLON_VERSION_NUMBER);
+    	augmentedModelDependencies.add(languageDep);
+    	Set<Dependency> modelDependencies = new HashSet<>(augmentedModelDependencies);
     	OUTER:
     	for (Dependency pomDependency : project.getDependencies()) {
     		// skip test deps
@@ -306,7 +313,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     		String pomGroupId = pomDependency.getGroupId();
     		String pomArtifactId = pomDependency.getArtifactId();
     		String pomVersion = pomDependency.getVersion();
-			for (Dependency modelDependency : model.getDependencies()) {
+			for (Dependency modelDependency : augmentedModelDependencies) {
 	    		String modelGroupId = modelDependency.getGroupId();
 	    		String modelArtifactId = modelDependency.getArtifactId();
 	    		// FIXME: workaround for ceylon bug
