@@ -1,2 +1,2 @@
-module foobar "1.0.0" {
+module foobar maven:"org.ceylon-lang.test":"doc-source" "1.0.0" {
 }

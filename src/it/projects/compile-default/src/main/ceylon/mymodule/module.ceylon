@@ -1,2 +1,2 @@
-module mymodule "1.0.0" {
+module mymodule maven:"org.ceylon-lang.test":"compile-default" "1.0.0" {
 }

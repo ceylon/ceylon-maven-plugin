@@ -1,2 +1,2 @@
-module mymodule "1.0.0" {
+module mymodule maven:"org.ceylon-lang.test":"run-skip" "1.0.0" {
 }

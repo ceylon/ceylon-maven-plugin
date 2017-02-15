@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.ceylon-lang.test</groupId>
-  <artifactId>compile-default</artifactId>
+  <artifactId>compile-out</artifactId>
   <version>1.3.2-SNAPSHOT</version>
 
   <name>compile-default</name>
