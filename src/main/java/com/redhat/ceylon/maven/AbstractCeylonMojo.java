@@ -157,7 +157,7 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 	private void exportDependency(String name, String version, File file) throws IOException {
 		System.err.println("Exporting Ceylon module file: "+file);
 		System.err.println("Exporting Ceylon module name: "+name);
-		System.err.println("Exporting Ceylon module name: "+version);
+		System.err.println("Exporting Ceylon module version: "+version);
 		File outputRepo = new File(buildDir, "ceylon-exported");
 		outputRepo.mkdirs();
 		File outputFolder = new File(outputRepo, name.replace('.', '/') + "/" + version);

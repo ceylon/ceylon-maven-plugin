@@ -266,17 +266,13 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
           File car = new File(path, module + "-" + version + ".car");
       	  MavenXpp3Reader reader = new MavenXpp3Reader();
       	  try(ZipFile zipFile = new ZipFile(car)){
-      		  // FIXME: this makes assumptions about the group/art name decided by Ceylon
-      		  int sep = module.lastIndexOf('.');
-      		  String groupId;
-      		  String artifactId;
-      		  if(sep != -1){
-      		    artifactId = module.substring(sep+1);
-      		    groupId = module.substring(0, sep);
-      		  }else{
-      			groupId = artifactId = module;
-      		  }
+      		  String groupId = project.getGroupId();
+      		  String artifactId = project.getArtifactId();
       		  ZipEntry entry = zipFile.getEntry("META-INF/maven/"+groupId+"/"+artifactId+"/pom.xml");
+      		  if(entry == null){
+      	        throw new MojoExecutionException("Maven descriptor missing in Ceylon module "+car
+      	        		+": perhaps you did not set group/artifact to "+groupId+":"+artifactId+"?");
+      		  }
       		  try(InputStream is = zipFile.getInputStream(entry)){
       			  Model model = reader.read(is);
       			  compareDependencies(model);
