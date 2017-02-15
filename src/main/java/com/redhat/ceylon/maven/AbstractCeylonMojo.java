@@ -69,7 +69,7 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 			}
 			System.err.println("Exporting type "+pomDependency.getType());
 			// skip non-jars
-			if(!pomDependency.getType().equals("jar"))
+			if(!pomDependency.getType().equals("jar") || pomDependency.getFile() == null)
 				continue;
 			exportDependency(pomDependency.getVersion(), pomDependency.getFile());
 		}    	
