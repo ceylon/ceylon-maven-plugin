@@ -80,7 +80,10 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
 
   @Parameter
   private File explodeTo;
-  
+
+  @Parameter
+  private boolean explode;
+
   public void execute() throws MojoExecutionException, MojoFailureException {
     ArrayList<File> files = new ArrayList<>();
     ArrayList<File> sourcePaths = new ArrayList<>();
@@ -102,7 +105,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
         sourcePaths.add(new File(source.getDirectory()));
       }
     } else {
-      File sourcePath = new File(cwd, "src/main/ceylon");
+      File sourcePath = new File(cwd, "src/"+getPhase()+"/ceylon");
       if (sourcePath.exists() && sourcePath.isDirectory()) {
         collectSources(sourcePath, files);
         sourcePaths.add(sourcePath);
@@ -125,7 +128,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
         resourcePaths.add(new File(resource.getDirectory()));
       }
     } else {
-      File resourcePath = new File(cwd, "src/main/resources");
+      File resourcePath = new File(cwd, "src/"+getPhase()+"/resources");
       if (resourcePath.exists() && resourcePath.isDirectory()) {
         collectSources(resourcePath, files);
         resourcePaths.add(resourcePath);
@@ -134,6 +137,10 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     if (sourcePaths.size() > 0 && files.size() > 0) {
       compile(sourcePaths, resourcePaths, files);
     }
+  }
+
+  protected String getPhase() {
+	return "main";
   }
 
   private void collectSources(File dir, List<File> files) {
@@ -226,11 +233,13 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
 
       public void moduleCompiled(String module, String version) {
         getLog().info("Compiled module " + module + "/" + version);
-        if (explodeTo != null) {
-            explodeModule(module, version);
+        if(explode){
+        	explodeModule(module, version, new File(getClassesOutput()));
+        }else if (explodeTo != null) {
+            explodeModule(module, version, explodeTo);
         }
         try {
-        	if(!disablePomChecks)
+        	if(!disablePomChecks && !isTest())
         		checkDependencies(module, version);
 		} catch (MojoExecutionException e) {
 			x[0] = e;
@@ -245,12 +254,20 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     }
   }
   
+  protected boolean isTest() {
+	return false;
+  }
+
+  protected String getClassesOutput() {
+	return project.getBuild().getOutputDirectory();
+  }
+
   private static Long getDefaultTarget() {
       String dottedVersion = System.getProperty("java.version");
       return Long.parseLong(dottedVersion.split("\\.|_|-")[1]);
   }
   
-    protected void explodeModule(String module, String version) {
+    protected void explodeModule(String module, String version, File explodeTo) {
         File fOut = new File(out);
         if (fOut.isDirectory()) {
             File path = new File(ModuleUtil.moduleToPath(fOut, module), version);
