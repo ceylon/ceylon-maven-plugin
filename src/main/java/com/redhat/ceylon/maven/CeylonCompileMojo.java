@@ -252,10 +252,6 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     }
   }
   
-  protected boolean isTest() {
-	return false;
-  }
-
   protected String getClassesOutput() {
 	return project.getBuild().getOutputDirectory();
   }

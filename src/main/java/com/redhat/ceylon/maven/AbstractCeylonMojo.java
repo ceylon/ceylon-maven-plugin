@@ -63,16 +63,21 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 		addLanguageDeps();
 		for (Artifact pomDependency : project.getDependencyArtifacts()) {
 			getLog().debug("Exporting "+pomDependency);
-			// skip test deps
-			if(pomDependency.getScope().equals(JavaScopes.TEST)){
+			// skip test deps unless we're dealing with tests
+			if(pomDependency.getScope().equals(JavaScopes.TEST)
+					&& !isTest()){
 				continue;
 			}
 			getLog().debug("Exporting type "+pomDependency.getType());
 			// skip non-jars
 			if(!pomDependency.getType().equals("jar") || pomDependency.getFile() == null)
 				continue;
-			exportDependency(pomDependency.getVersion(), pomDependency.getFile());
+			addDep(pomDependency.getGroupId(), pomDependency.getArtifactId(), pomDependency.getVersion());
 		}    	
+	}
+
+	protected boolean isTest() {
+		return false;
 	}
 
 	private void exportDependency(String version, File file) {
