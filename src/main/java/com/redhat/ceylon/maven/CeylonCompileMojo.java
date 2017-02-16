@@ -215,7 +215,6 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
         } else {
           msg = "Compilation error:" + message;
         }
-        System.out.println("ERROR : " + msg);
         getLog().error(msg);
       }
 
@@ -228,7 +227,6 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
           msg = "Compilation warning:" + message;
         }
         getLog().warn(msg);
-        System.out.println(msg);
       }
 
       public void moduleCompiled(String module, String version) {

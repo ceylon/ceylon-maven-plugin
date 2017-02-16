@@ -59,15 +59,15 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 	protected List<RemoteRepository> repositories;
 
 	protected void exportDependencies() throws MojoExecutionException{
-		System.err.println("Exporting deps ");
+		getLog().debug("Exporting deps ");
 		addLanguageDeps();
 		for (Artifact pomDependency : project.getDependencyArtifacts()) {
-			System.err.println("Exporting "+pomDependency);
+			getLog().debug("Exporting "+pomDependency);
 			// skip test deps
 			if(pomDependency.getScope().equals(JavaScopes.TEST)){
 				continue;
 			}
-			System.err.println("Exporting type "+pomDependency.getType());
+			getLog().debug("Exporting type "+pomDependency.getType());
 			// skip non-jars
 			if(!pomDependency.getType().equals("jar") || pomDependency.getFile() == null)
 				continue;
@@ -99,7 +99,7 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 					return;
 				}
 			}
-			System.err.println("Not a Ceylon module: "+file);
+			getLog().debug("Not a Ceylon module: "+file);
 		} catch (ZipException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 		addDep("org.ceylon-lang", "ceylon.language", Versions.CEYLON_VERSION_NUMBER);
 	}
 	private void addDep(String groupId, String artifactId, String version) throws MojoExecutionException {
-		System.err.println("addDep "+groupId+":"+artifactId);
+		getLog().debug("addDep "+groupId+":"+artifactId);
 		org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(
 				groupId,
 				artifactId,
@@ -142,9 +142,9 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 			throw new MojoExecutionException( "Artifact could not be resolved.", e );
 		}
 
-		System.err.println("Got results: "+dependencyResult.getArtifactResults());
+		getLog().debug("Got results: "+dependencyResult.getArtifactResults());
 		for(ArtifactResult result : dependencyResult.getArtifactResults()){
-			System.err.println("Got result: "+result);
+			getLog().debug("Got result: "+result);
 			File file = result.getArtifact().getFile();
 			if( file == null || ! file.exists()) {
 				getLog().warn( "Artifact  has no attached file. Its content will not be copied in the target model directory." );
@@ -155,9 +155,9 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 	}
 
 	private void exportDependency(String name, String version, File file) throws IOException {
-		System.err.println("Exporting Ceylon module file: "+file);
-		System.err.println("Exporting Ceylon module name: "+name);
-		System.err.println("Exporting Ceylon module version: "+version);
+		getLog().debug("Exporting Ceylon module file: "+file);
+		getLog().debug("Exporting Ceylon module name: "+name);
+		getLog().debug("Exporting Ceylon module version: "+version);
 		File outputRepo = new File(buildDir, "ceylon-exported");
 		outputRepo.mkdirs();
 		File outputFolder = new File(outputRepo, name.replace('.', '/') + "/" + version);
