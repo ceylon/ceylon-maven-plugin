@@ -16,7 +16,7 @@ import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaRunnerImpl;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
-public class CeylonRunMojo extends AbstractCeylonMojo {
+public class CeylonRunMojo extends AbstractCeylonRunMojo {
 
   @Parameter(required = true)
   private String module;
@@ -60,6 +60,7 @@ public class CeylonRunMojo extends AbstractCeylonMojo {
       } catch (Exception e) {
         throw new MojoExecutionException("Invalid module name " + module, e);
       }
+      saveBeforeJBossModules();
       try {
         JavaRunner runner = new JavaRunnerImpl(runnerOptions, moduleSpec.getName(), moduleSpec.getVersion());
         if (arguments != null) {
@@ -69,6 +70,8 @@ public class CeylonRunMojo extends AbstractCeylonMojo {
         }
       } catch (Exception e) {
         throw new MojoExecutionException("Execution error", e);
+      } finally {
+    	  restoreAfterJBossModules();
       }
     }
   }

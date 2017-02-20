@@ -29,7 +29,9 @@ import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaRunnerImpl;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
-public class CeylonTestMojo extends AbstractCeylonMojo {
+public class CeylonTestMojo extends AbstractCeylonRunMojo {
+    @Parameter( property = "maven.test.failure.ignore", defaultValue = "false" )
+    private boolean testFailureIgnore;
 
   @Parameter
   private String[] modules;
@@ -42,6 +44,7 @@ public class CeylonTestMojo extends AbstractCeylonMojo {
 
   @Parameter
   private boolean skip;
+
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (!skip) {
@@ -89,7 +92,6 @@ public class CeylonTestMojo extends AbstractCeylonMojo {
     	  int i=0;
     	  for (String module : foundModules) {
     		  ModuleVersionDetails details = versionReader.fromSource(module);
-    		  System.err.println("Found module: "+details);
     		  moduleSpecs[i++] = new ModuleSpec(DefaultRepository.NAMESPACE, module, details.getVersion());
     	  }
       }
@@ -99,23 +101,38 @@ public class CeylonTestMojo extends AbstractCeylonMojo {
       }
       runnerOptions.setExtraModules(extraModules);
       runnerOptions.setRun("ceylon.test::runTestTool");
+
+      saveBeforeJBossModules();
       try {
         JavaRunner runner = new JavaRunnerImpl(runnerOptions, "ceylon.test", Versions.CEYLON_VERSION_NUMBER);
         String[] args;
         if (arguments != null) {
-        	args = new String[(2*moduleSpecs.length)+arguments.length];
+        	args = new String[3+(2*moduleSpecs.length)+arguments.length];
         	System.arraycopy(arguments, 0, args, 2*moduleSpecs.length, arguments.length);
         } else {
-        	args = new String[2*moduleSpecs.length];
+        	args = new String[3+2*moduleSpecs.length];
         }
         int i = 0;
+        args[i++] = "--xml-junit-report";
+        args[i++] = "--reports-dir";
+        args[i++] = project.getBuild().getDirectory()+"/surefire-reports";
+        System.err.println("Reports at "+(project.getBuild().getDirectory()+"/surefire-reports"));
         for (ModuleSpec moduleSpec : moduleSpecs) {
 			args[i++] = "--module";
 			args[i++] = moduleSpec.getName() + "/" + moduleSpec.getVersion();
 		}
-        runner.run(args);
+        runner.run(args);	
       } catch (Exception e) {
-        throw new MojoExecutionException("Execution error", e);
+    	  if(e.getClass().getName().endsWith(".TestFailureException")){
+    		  // Surefire sets this one so that "test" targets fail, but "reporting" targets don't
+    		  if(testFailureIgnore)
+    			  getLog().error("Tests failed: "+e.getMessage());
+    		  else
+    			  throw new MojoFailureException("Test failure", e);
+    	  }else
+    		  throw new MojoExecutionException("Execution error", e);
+      } finally {
+          restoreAfterJBossModules();
       }
     }
   }
