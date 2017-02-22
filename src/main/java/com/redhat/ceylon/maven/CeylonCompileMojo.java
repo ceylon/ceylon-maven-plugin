@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -24,11 +23,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.util.artifact.JavaScopes;
 
+import com.redhat.ceylon.common.Backend;
 import com.redhat.ceylon.common.FileUtil;
 import com.redhat.ceylon.common.ModuleUtil;
 import com.redhat.ceylon.common.Versions;
@@ -43,19 +41,7 @@ import com.redhat.ceylon.compiler.java.runtime.tools.impl.JavaCompilerImpl;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE)
-public class CeylonCompileMojo extends AbstractCeylonMojo {
-
-  @Parameter(defaultValue = "${project.build.directory}/modules")
-  private String out;
-
-  @Parameter()
-  private List<FileSet> sources;
-
-  @Parameter()
-  private List<FileSet> resources;
-
-  @Parameter
-  private String[] userRepos;
+public class CeylonCompileMojo extends AbstractCeylonCompileMojo {
 
   @Parameter
   private boolean disablePomChecks;
@@ -84,79 +70,9 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
   @Parameter
   private boolean explode;
 
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    ArrayList<File> files = new ArrayList<>();
-    ArrayList<File> sourcePaths = new ArrayList<>();
-    ArrayList<File> resourcePaths = new ArrayList<>();
-    if (this.sources != null) {
-      FileSetManager fileSetManager = new FileSetManager();
-      for (FileSet source : this.sources) {
-        File sourcePath = new File(source.getDirectory());
-        Set<File> excluded = new HashSet<>();
-        for (String excludedFile : fileSetManager.getExcludedFiles(source)) {
-          excluded.add(new File(sourcePath, excludedFile));
-        }
-        for (String includedFile : fileSetManager.getIncludedFiles(source)) {
-          File included = new File(sourcePath, includedFile);
-          if (!excluded.contains(included)) {
-            files.add(included);
-          }
-        }
-        sourcePaths.add(new File(source.getDirectory()));
-      }
-    } else {
-      File sourcePath = new File(cwd, "src/"+getPhase()+"/ceylon");
-      if (sourcePath.exists() && sourcePath.isDirectory()) {
-        collectSources(sourcePath, files);
-        sourcePaths.add(sourcePath);
-      }
-    }
-    if (this.resources != null) {
-      FileSetManager fileSetManager = new FileSetManager();
-      for (FileSet resource : this.resources) {
-        File resourcePath = new File(resource.getDirectory());
-        Set<File> excluded = new HashSet<>();
-        for (String excludedFile : fileSetManager.getExcludedFiles(resource)) {
-          excluded.add(new File(resourcePath, excludedFile));
-        }
-        for (String includedFile : fileSetManager.getIncludedFiles(resource)) {
-          File included = new File(resourcePath, includedFile);
-          if (!excluded.contains(included)) {
-            files.add(included);
-          }
-        }
-        resourcePaths.add(new File(resource.getDirectory()));
-      }
-    } else {
-      File resourcePath = new File(cwd, "src/"+getPhase()+"/resources");
-      if (resourcePath.exists() && resourcePath.isDirectory()) {
-        collectSources(resourcePath, files);
-        resourcePaths.add(resourcePath);
-      }
-    }
-    if (sourcePaths.size() > 0 && files.size() > 0) {
-      compile(sourcePaths, resourcePaths, files);
-    }
-  }
-
-  protected String getPhase() {
-	return "main";
-  }
-
-  private void collectSources(File dir, List<File> files) {
-    File[] children = dir.listFiles();
-    if (children != null) {
-      for (File child : children) {
-        if (child.isDirectory()) {
-          collectSources(child, files);
-        } else if (child.isFile() && (child.getName().endsWith(".ceylon") || child.getName().endsWith(".java"))) {
-          files.add(child);
-        }
-      }
-    }
-  }
-
-  private void compile(List<File> sourcePath, List<File> resourcePath, List<File> files) throws MojoExecutionException, MojoFailureException {
+  @Override
+  protected void compile(List<File> sourcePath, List<File> resourcePath, List<File> files, List<String> modules) 
+		  throws MojoExecutionException, MojoFailureException {
 	exportDependencies();
     Compiler compiler = new JavaCompilerImpl() {
         @Override
@@ -172,7 +88,7 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
     };
     CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
     JavaCompilerOptions options = JavaCompilerOptions.fromConfig(cfg);
-    options.setModules(Collections.<String>emptyList());
+    options.setModules(modules);
     options.setJavacTarget(getDefaultTarget());
     options.setSourcePath(sourcePath);
     options.setResourcePath(resourcePath);
@@ -416,5 +332,10 @@ public class CeylonCompileMojo extends AbstractCeylonMojo {
           c.close();
       } catch (Exception ignored) {
       }
+  }
+
+  @Override
+  protected Backend getBackend() {
+	return Backend.Java;
   }
 }
