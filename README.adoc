@@ -6,6 +6,45 @@ Here is an https://github.com/vietj/ceylon-maven-example[example project].
 
 == Usage
 
+Use this in your `pom.xml` file:
+
+----
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.ceylon-lang</groupId>
+      <artifactId>ceylon-maven-plugin</artifactId>
+      <version>1.3.2</version>
+      <configuration>
+        <!-- Recommended for mixing Java/Ceylon modules --> 
+        <explode>true</explode>
+      </configuration>
+      <extensions>true</extensions>
+    </plugin>
+  </plugins>
+</build>
+----
+
+By default, if you configure your plugin with `extensions` enabled, you don't need
+to specify any phase: the default `compile`, `compileTest` and `test` phases
+will be respected and your modules will be compiled in the proper phases.
+
+The Ceylon module declarations go in `src/main/ceylon` and your tests go in 
+`src/test/ceylon`.
+
+It is recommended to have a single Ceylon module per Maven module, and to make the `pom.xml`
+coordinates such as `groupId`, `artifactId` and `version` match with those
+declared in the `module.ceylon` file, as well as the list of dependencies. This can
+be disabled with:
+
+----
+<configuration>
+  <disablePomChecks>true</disablePomChecks>
+</configuration>
+----
+
+You can find more information at https://ceylon-lang.org/documentation/1.3/reference/interoperability/maven/
+
 === Import Maven dependencies as Ceylon modules
 
 The `import-dependency` goal imports a Maven dependency in a Ceylon repository:
