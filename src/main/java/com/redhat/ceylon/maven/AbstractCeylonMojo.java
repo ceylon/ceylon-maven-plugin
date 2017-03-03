@@ -152,7 +152,9 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 			getLog().debug("Got result: "+result);
 			File file = result.getArtifact().getFile();
 			if( file == null || ! file.exists()) {
-				getLog().warn( "Artifact  has no attached file. Its content will not be copied in the target model directory." );
+				getLog().warn( "Artifact has no attached file. Its content will not be copied in the target model directory." );
+			}else if(file.isDirectory()){
+				getLog().warn( "Artifact is a folder. Its content will not be copied in the target model directory." );
 			}else{
 				exportDependency(result.getArtifact().getVersion(), file);
 			}

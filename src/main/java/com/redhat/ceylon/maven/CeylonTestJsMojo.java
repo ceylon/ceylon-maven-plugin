@@ -34,6 +34,12 @@ public class CeylonTestJsMojo extends AbstractCeylonMojo {
     @Parameter( property = "maven.test.failure.ignore", defaultValue = "false" )
     private boolean testFailureIgnore;
 
+    @Parameter( property = "skipTests", defaultValue = "false" )
+    private boolean skipTests;
+
+    @Parameter( property = "maven.test.skip", defaultValue = "false" )
+    private boolean mavenTestSkip;
+
   @Parameter
   private String[] modules;
 
@@ -47,7 +53,7 @@ public class CeylonTestJsMojo extends AbstractCeylonMojo {
   private boolean skip;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
-    if (!skip) {
+	if (!skip && !mavenTestSkip && !skipTests) {
       exportDependencies();
       CeylonConfig cfg = CeylonConfig.createFromLocalDir(cwd);
       RunnerOptions runnerOptions = RunnerOptions.fromConfig(cfg);
