@@ -75,7 +75,7 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 			// skip non-jars
 			if(!pomDependency.getType().equals("jar") || pomDependency.getFile() == null)
 				continue;
-			addDep(pomDependency.getGroupId(), pomDependency.getArtifactId(), pomDependency.getVersion());
+			addDep(pomDependency.getGroupId(), pomDependency.getArtifactId(), pomDependency.getClassifier(), pomDependency.getVersion());
 		}    	
 	}
 
@@ -118,14 +118,14 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 	}
 
 	private void addLanguageDeps() throws MojoExecutionException {
-		addDep("org.ceylon-lang", "ceylon.language", Versions.CEYLON_VERSION_NUMBER);
+		addDep("org.ceylon-lang", "ceylon.language", null, Versions.CEYLON_VERSION_NUMBER);
 	}
-	private void addDep(String groupId, String artifactId, String version) throws MojoExecutionException {
+	private void addDep(String groupId, String artifactId, String classifier, String version) throws MojoExecutionException {
 		getLog().debug("addDep "+groupId+":"+artifactId);
 		org.eclipse.aether.artifact.Artifact aetherArtifact = new DefaultArtifact(
 				groupId,
 				artifactId,
-				null,
+				classifier,
 				"jar",
 				version);
 
@@ -139,7 +139,7 @@ public abstract class AbstractCeylonMojo extends AbstractMojo {
 		dependencyRequest.setFilter(new DependencyFilter(){
 			@Override
 			public boolean accept(DependencyNode dep, List<DependencyNode> parents) {
-				return true;
+				return dep.getArtifact().getClassifier() == null;
 			}
 		});
 
