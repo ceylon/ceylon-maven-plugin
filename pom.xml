@@ -44,6 +44,14 @@
         <role>Owner</role>
       </roles>
     </developer>
+    <developer>
+      <id>stephane.epardaud</id>
+      <name>Stéphane Épardaud</name>
+      <email>stef@epardaud.fr</email>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
   </developers>
 
   <properties>
