@@ -319,6 +319,56 @@ Extra user repositories can be added:
 </configuration>
 ----
 
+=== Copy Ceylon modules
+
+The `copy` goal copies Ceylon modules to a given repository:
+
+----
+<execution>
+  <goals>
+    <goal>copy</goal>
+  </goals>
+  <!-- Other configuration can be used, such as userRepos, ceylonHome, verbose -->
+  <configuration>
+    <!-- include everything (defaults to false) -->
+    <all>true</all>
+    <!-- include js modules: .js (defaults to true) -->
+    <js>true</js>
+    <!-- include jvm modules: .car and .jar (defaults to true) -->
+    <jvm>true</jvm>
+    <!-- include source modules: .src (defaults to false) -->
+    <src>true</src>
+    <!-- include module documentation (defaults to false) -->
+    <docs>true</docs>
+    <!-- include script modules (defaults to false) -->
+    <scripts>true</scripts>
+    <!-- include dependencies (defaults to false) -->
+    <withDependencies>true</withDependencies>
+    <!-- include the language module (defaults to false) -->
+    <languageModule>true</languageModule>
+    <!-- HTTP timeout in milliseconds (defaults to 20 seconds) -->
+    <!-- Can be configured with (-Dceylon.timeout) -->
+    <timeout>true</timeout>
+    
+    <!-- URI of target repository (defaults to ./modules) -->
+    <out>target/new-repo</out>
+
+    <!-- HTTP user name of target repository, if HTTP -->
+    <!-- Can be configured with (-Dceylon.username) -->
+    <username>Bob</username>
+    <!-- HTTP password of target repository, if HTTP -->
+    <!-- Can be configured with (-Dceylon.password) -->
+    <password>Bob</password>
+    
+    <!-- list of modules to copy -->
+    <modules>
+      <module>com.example.foo/1.1</module>
+      <module>com.example.bar/2.3</module>
+    </modules>
+  </configuration>
+</execution>
+----
+
 == Eclipse Integration
 
 In order to create a project with the Ceylon Maven plugin using Eclipse, start by creating the project using a Maven wizard
@@ -359,6 +409,16 @@ Plugin versions are named after Ceylon releases using an extra number for its ow
 
 == Changelog
 
+ - 1.3.2.1:
+ 
+   * Added copy goal
+
+ - 1.3.2:
+ 
+   * Updated to Ceylon 1.3.2
+   * Hooked into regular phases, using extension
+   * Added test compilation and runs
+
  - 1.3.1:
  
    * Fixed problem with unset `options.javacTarget`
@@ -373,7 +433,6 @@ Plugin versions are named after Ceylon releases using an extra number for its ow
 == Todo
 
 - compile: specify module
-- _test_ goal
 - import sources jar
 - default module id when classifer != null
 - maybe need to handle dependency scope in importer
