@@ -119,6 +119,8 @@ public class CeylonCompileMojo extends AbstractCeylonCompileMojo {
     addExportedUserRepository(options);
     if(ceylonHome != null)
     	options.setSystemRepository(ceylonHome + "/repo");
+    if(timeout != null)
+    	options.setTimeout(timeout);
     options.setFiles(files);
     final MojoExecutionException[] x = new MojoExecutionException[1];
     boolean ok = compiler.compile(options, new CompilationListener() {

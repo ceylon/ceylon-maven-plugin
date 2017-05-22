@@ -73,6 +73,8 @@ public class CeylonTestJsMojo extends AbstractCeylonMojo {
       addExportedUserRepository(runnerOptions);
       if(ceylonHome != null)
       	runnerOptions.setSystemRepository(ceylonHome + "/repo");
+      if(timeout != null)
+      	runnerOptions.setTimeout(timeout);
       if (cwd != null) {
           runnerOptions.setWorkingDirectory(cwd.getAbsolutePath());
       }

@@ -33,7 +33,10 @@ import com.redhat.ceylon.common.Versions;
 import com.redhat.ceylon.compiler.java.runtime.tools.Options;
 
 public abstract class AbstractCeylonMojo extends AbstractMojo {
-	
+
+	@Parameter(property = "ceylon.timeout")
+	protected Integer timeout;
+
 	@Parameter(readonly = true, property = "ceylon.home")
 	protected String ceylonHome;
 

@@ -52,6 +52,8 @@ public class CeylonCompileJsMojo extends AbstractCeylonCompileMojo {
     addExportedUserRepository(options);
     if(ceylonHome != null)
     	options.setSystemRepository(ceylonHome + "/repo");
+    if(timeout != null)
+    	options.setTimeout(timeout);
     options.setFiles(files);
     boolean ok = compiler.compile(options, new CompilationListener() {
 
