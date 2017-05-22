@@ -437,3 +437,9 @@ Plugin versions are named after Ceylon releases using an extra number for its ow
 - default module id when classifer != null
 - maybe need to handle dependency scope in importer
 - test external snapshot resolution
+
+== Deploy to Maven Central
+
+Run:
+
+    mvn release:clean release:prepare release:perform
