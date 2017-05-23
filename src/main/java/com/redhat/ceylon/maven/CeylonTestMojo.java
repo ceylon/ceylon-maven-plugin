@@ -43,6 +43,9 @@ public class CeylonTestMojo extends AbstractCeylonRunMojo {
   private String[] modules;
 
   @Parameter
+  private String[] tests;
+
+  @Parameter
   private String[] userRepos;
 
   @Parameter
@@ -113,23 +116,24 @@ public class CeylonTestMojo extends AbstractCeylonRunMojo {
       saveBeforeJBossModules();
       try {
         JavaRunner runner = new JavaRunnerImpl(runnerOptions, "ceylon.test", Versions.CEYLON_VERSION_NUMBER);
-        String[] args;
-        if (arguments != null) {
-        	args = new String[3+(2*moduleSpecs.length)+arguments.length];
-        	System.arraycopy(arguments, 0, args, 2*moduleSpecs.length, arguments.length);
-        } else {
-        	args = new String[3+2*moduleSpecs.length];
-        }
-        int i = 0;
-        args[i++] = "--xml-junit-report";
-        args[i++] = "--reports-dir";
-        args[i++] = project.getBuild().getDirectory()+"/surefire-reports";
-        System.err.println("Reports at "+(project.getBuild().getDirectory()+"/surefire-reports"));
+        List<String> args = new LinkedList<>();
+        args.add("--xml-junit-report");
+        args.add("--reports-dir");
+        args.add(project.getBuild().getDirectory()+"/surefire-reports");
         for (ModuleSpec moduleSpec : moduleSpecs) {
-			args[i++] = "--module";
-			args[i++] = moduleSpec.getName() + "/" + moduleSpec.getVersion();
+			args.add("--module");
+			args.add(moduleSpec.getName() + "/" + moduleSpec.getVersion());
 		}
-        runner.run(args);	
+        if(tests != null){
+        	for (String test : tests) {
+        		args.add("--test");
+        		args.add(test);
+        	}
+        }
+        if (arguments != null) {
+        	args.addAll(Arrays.asList(arguments));
+        }
+        runner.run(args.toArray(new String[args.size()]));	
       } catch (Exception e) {
     	  if(e.getClass().getName().endsWith(".TestFailureException")){
     		  // Surefire sets this one so that "test" targets fail, but "reporting" targets don't
