@@ -286,6 +286,46 @@ Finally the execution can be skipped:
 </configuration>
 ----
 
+=== Test a Ceylon module
+
+The `test` and `test-js` goals test a Ceylon application, for the JVM and JS backends respectively:
+
+----
+<execution>
+  <phase>test</phase>
+  <goals>
+    <goal>test</goal>
+  </goals>
+  <configuration>
+    <module>my.module/1.0.0</module>
+  </configuration>
+</execution>
+----
+
+Options are the same as those for `run` and `run-js` except you can run multiple modules:
+
+----
+  <configuration>
+    <modules>
+     <module>my.module/1.0.0</module>
+    </modules>
+  </configuration>
+----
+
+You can also specify which tests to run:
+
+----
+  <configuration>
+    <modules>
+     <module>my.module/1.0.0</module>
+    </modules>
+    <tests>
+     <test>my.module::testFoo</test>
+     <test>my.module::testBar</test>
+    </tests>
+  </configuration>
+----
+
 === Document a Ceylon module
 
 The `doc` goal documents a Ceylon:
