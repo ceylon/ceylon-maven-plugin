@@ -47,13 +47,13 @@ public class CeylonCompileMojo extends AbstractCeylonCompileMojo {
   private boolean disablePomChecks;
 
   @Parameter
-  private boolean flatClasspath;
+  private Boolean flatClasspath;
 
   @Parameter
-  private boolean autoExportMavenDependencies;
+  private Boolean autoExportMavenDependencies;
 
   @Parameter
-  private boolean fullyExportMavenDependencies;
+  private Boolean fullyExportMavenDependencies;
 
   @Parameter
   private String jdkProvider;
@@ -96,10 +96,15 @@ public class CeylonCompileMojo extends AbstractCeylonCompileMojo {
         options.setWorkingDirectory(cwd.getAbsolutePath());
     }
     options.setOutputRepository(out);
-    options.setFlatClasspath(flatClasspath);
-    options.setAutoExportMavenDependencies(autoExportMavenDependencies);
-    options.setFullyExportMavenDependencies(fullyExportMavenDependencies);
-    options.setJdkProvider(jdkProvider);
+    if(flatClasspath != null)
+    	options.setFlatClasspath(flatClasspath);
+    if(autoExportMavenDependencies != null)
+    	options.setAutoExportMavenDependencies(autoExportMavenDependencies);
+    if(fullyExportMavenDependencies != null)
+    	options.setFullyExportMavenDependencies(fullyExportMavenDependencies);
+    
+    if(jdkProvider != null)
+    	options.setJdkProvider(jdkProvider);
     if (aptModules != null) {
         options.setAptModules(aptModules);
     }

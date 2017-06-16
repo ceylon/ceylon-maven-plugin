@@ -62,8 +62,10 @@ public class CeylonCopyMojo extends AbstractCeylonMojo {
 		tool.setOut(out);
 		tool.setModules(Arrays.asList(modules));
 		tool.setVerbose(verbose);
-		tool.setUser(username);
-		tool.setPass(password);
+		if(username != null)
+			tool.setUser(username);
+		if(password != null)
+			tool.setPass(password);
 		if(all != null)
 			tool.setAll(all);
 		if(js != null)
