@@ -10,7 +10,7 @@
 
   <groupId>org.ceylon-lang</groupId>
   <artifactId>ceylon-maven-plugin</artifactId>
-  <version>1.3.3</version>
+  <version>1.3.3-SNAPSHOT</version>
 
   <licenses>
     <license>
@@ -170,7 +170,7 @@
               <!--<invokerTest>compile-default/pom.xml</invokerTest>-->
               <debug>true</debug>
               <properties>
-                <plugin.version>1.3.3</plugin.version>
+                <plugin.version>1.3.3-SNAPSHOT</plugin.version>
                 <ceylon.home>${ceylon.home}</ceylon.home>
               </properties>
               <testProperties>
