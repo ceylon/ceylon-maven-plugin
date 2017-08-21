@@ -115,7 +115,8 @@ public class CeylonTestMojo extends AbstractCeylonRunMojo {
 
       saveBeforeJBossModules();
       try {
-        JavaRunner runner = new JavaRunnerImpl(runnerOptions, "ceylon.test", Versions.CEYLON_VERSION_NUMBER);
+    	  /* FIXME: hard-coded version workaround until https://github.com/ceylon/ceylon-sdk/issues/684 is in main version */
+        JavaRunner runner = new JavaRunnerImpl(runnerOptions, "ceylon.test", "1.3.3.1");
         List<String> args = new LinkedList<>();
         args.add("--xml-junit-report");
         args.add("--reports-dir");
