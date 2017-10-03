@@ -181,7 +181,9 @@ public class CeylonCompileMojo extends AbstractCeylonCompileMojo {
 
   private static Long getDefaultTarget() {
       String dottedVersion = System.getProperty("java.version");
-      return Long.parseLong(dottedVersion.split("\\.|_|-")[1]);
+      String[] parts = dottedVersion.split("\\.|_|-");
+      String versionPart = parts[0].equals("1") ? parts[1] : parts[0];
+      return Long.parseLong(versionPart);
   }
   
     protected void explodeModule(String module, String version, File explodeTo) {
